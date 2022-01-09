@@ -1,2 +1,2 @@
-# HexBee
-HexBee is a Visual Studio Code extension that displays files in hexadecimal
+# BinBaboon
+BinBaboon is a web application that displays files in hexadecimal and allows bookmarking bytes

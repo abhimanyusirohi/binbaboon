@@ -46,8 +46,8 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
     showOpenFormatAlertDialog(false);
 
     if (result === "Open") {
-      const records = applicationStore.formatDefinitionStore.readFile();
-      applicationStore.bookmarkStore.addBookmarksForRecords(records);
+      // const records = applicationStore.formatDefinitionStore.readFile();
+      // applicationStore.bookmarkStore.addBookmarksForRecords(records);
     }
   };
 
@@ -75,8 +75,8 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
       </Grid>
       {addBookmarkDialogShown && (
         <AddBookmarkDialog
-          currentSelection={applicationStore.selectionStore.currentSelection}
-          bookmarkStore={applicationStore.bookmarkStore}
+          store={applicationStore.bookmarkStore}
+          selection={applicationStore.selectionStore.currentSelection}
           onClose={() => showAddBookmarkDialog(false)}
         />
       )}

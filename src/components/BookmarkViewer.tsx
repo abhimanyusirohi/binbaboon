@@ -23,7 +23,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpIcon from "@mui/icons-material/HelpOutline";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 
-import { Bookmark, BookmarkStore } from "../stores/BookmarkStore";
+import { Bookmark } from "../stores/BookmarkCollection";
+import { BookmarkStore } from "../stores/BookmarkStore";
 import { SelectionStore } from "../stores/SelectionStore";
 
 /**
@@ -67,7 +68,7 @@ export const BookmarkViewer: React.FunctionComponent<BookmarkViewerProps> = obse
     const handleSelect = (event: React.SyntheticEvent, nodeIds: string[] | string) => {
       setSelected(nodeIds as string);
 
-      const bookmark = bookmarkStore.findBookmarkByName(nodeIds as string);
+      const bookmark = bookmarkStore.bookmarkCollection.find(nodeIds as string);
       if (bookmark) {
         selectionStore.setSelection(bookmark.selection);
         selectionStore.scrollToSelection();
@@ -92,9 +93,14 @@ export const BookmarkViewer: React.FunctionComponent<BookmarkViewerProps> = obse
         <StyledTreeItem
           key={bookmark.name}
           nodeId={bookmark.name}
-          label={<CustomTreeItem bookmark={bookmark} onDelete={() => bookmarkStore.deleteBookmark(bookmark.name)} />}
+          label={
+            <CustomTreeItem
+              bookmark={bookmark}
+              onDelete={() => bookmarkStore.bookmarkCollection.delete(bookmark.name)}
+            />
+          }
         >
-          {bookmark.children && renderTree(bookmark.children)}
+          {renderTree(bookmark.children.bookmarks)}
         </StyledTreeItem>
       ));
 
@@ -111,7 +117,7 @@ export const BookmarkViewer: React.FunctionComponent<BookmarkViewerProps> = obse
             subheader="Make bytes meaningful by adding bookmarks"
           />
           <CardContent sx={{ overflow: "auto" }}>
-            {bookmarkStore.bookmarks.length > 0 && (
+            {bookmarkStore.bookmarkCount > 0 && (
               <TreeView
                 defaultCollapseIcon={<ExpandMoreIcon />}
                 defaultExpandIcon={<ChevronRightIcon />}
@@ -121,7 +127,7 @@ export const BookmarkViewer: React.FunctionComponent<BookmarkViewerProps> = obse
                 onNodeSelect={handleSelect}
                 sx={{ height: 500 }}
               >
-                {renderTree(bookmarkStore.bookmarks)}
+                {renderTree(bookmarkStore.bookmarkCollection.bookmarks)}
               </TreeView>
             )}
           </CardContent>
@@ -150,7 +156,7 @@ const CustomTreeItem: React.FunctionComponent<CustomTreeItemProps> = ({ bookmark
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box component={bookmark.hasChildren ? BookmarksIcon : BookmarkIcon} color="inherit" />
+      <Box component={bookmark.children.hasBookmarks ? BookmarksIcon : BookmarkIcon} color="inherit" />
       <Typography variant="body2" sx={{ fontWeight: "inherit", flexGrow: 1 }}>
         {bookmark.name}
       </Typography>

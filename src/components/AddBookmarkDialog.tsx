@@ -12,16 +12,12 @@ import { Selection } from "../stores/Selection";
 import { BookmarkStore } from "../stores/BookmarkStore";
 
 export interface AddBookmarkDialogProps {
-  currentSelection: Selection;
-  bookmarkStore: BookmarkStore;
+  store: BookmarkStore;
+  selection: Selection;
   onClose: () => void;
 }
 
-export const AddBookmarkDialog: React.FunctionComponent<AddBookmarkDialogProps> = ({
-  currentSelection,
-  bookmarkStore,
-  onClose
-}) => {
+export const AddBookmarkDialog: React.FunctionComponent<AddBookmarkDialogProps> = ({ store, selection, onClose }) => {
   const [bookmarkName, setBookmarkName] = useState<string>("");
   const [bookmarkDescription, setBookmarkDescription] = useState<string>("");
   const [errorText, setErrorText] = useState<string>("");
@@ -33,8 +29,8 @@ export const AddBookmarkDialog: React.FunctionComponent<AddBookmarkDialogProps> 
 
   const addBookmark = () => {
     try {
-      bookmarkStore.addBookmark(bookmarkName, bookmarkDescription, currentSelection);
-      bookmarkStore.selectBookmark(bookmarkName);
+      store.bookmarkCollection.add(bookmarkName, bookmarkDescription, selection);
+      store.selectBookmark(bookmarkName);
 
       onClose();
     } catch (err) {
@@ -49,7 +45,7 @@ export const AddBookmarkDialog: React.FunctionComponent<AddBookmarkDialogProps> 
       <DialogTitle id="form-dialog-title">Add Bookmark</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          {`A bookmark will be created for data from zero-based offset [${currentSelection.fromOffset}] to offset [${currentSelection.toOffset}]`}
+          {`A bookmark will be created for data from zero-based offset [${selection.fromOffset}] to offset [${selection.toOffset}]`}
         </DialogContentText>
         <TextField
           id="name"

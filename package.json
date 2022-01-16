@@ -28,6 +28,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "jest --collectCoverage --collectCoverageFrom=**/*.{ts,tsx} --colors",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

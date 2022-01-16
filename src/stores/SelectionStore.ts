@@ -7,6 +7,8 @@ export class SelectionStore {
   public scrollToSelectionSignal = false;
 
   constructor(private data: Uint8Array) {
+    this.currentSelection = new Selection(0, 0);
+
     makeObservable(this, {
       currentSelection: observable,
       scrollToSelectionSignal: observable,
@@ -14,8 +16,6 @@ export class SelectionStore {
       setSelection: action,
       scrollToSelection: action
     });
-
-    this.currentSelection = new Selection(0, 0);
   }
 
   public setSelection(selection: Selection): void {

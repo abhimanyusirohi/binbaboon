@@ -58,4 +58,6 @@ describe("GoToOffsetDialog", () => {
 
     expect(store.selectionStore.currentSelection).toMatchObject({ fromOffset: 8, toOffset: 8 });
   });
+
+  test.todo("must only accept integer values");
 });

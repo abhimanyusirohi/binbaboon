@@ -94,9 +94,11 @@ export const SelectionViewer: React.FunctionComponent<SelectionViewerProps> = ob
                   <DataDisplay
                     dataType={`Int${integerSize}`}
                     dataValue={hasIntRepresentation ? signedValue.toString() : "-"}
-                    onCopy={handleCopy}
+                    onCopy={hasIntRepresentation ? handleCopy : undefined}
                     onGoToOffset={
-                      store.isValidSelection(new Selection(signedValue, signedValue)) ? handleGoToOffset : undefined
+                      hasIntRepresentation && store.isValidSelection(new Selection(signedValue, signedValue))
+                        ? handleGoToOffset
+                        : undefined
                     }
                   />
                 </Grid>
@@ -104,14 +106,20 @@ export const SelectionViewer: React.FunctionComponent<SelectionViewerProps> = ob
                   <DataDisplay
                     dataType={`UInt${integerSize}`}
                     dataValue={hasIntRepresentation ? unsignedValue.toString() : "-"}
-                    onCopy={handleCopy}
+                    onCopy={hasIntRepresentation ? handleCopy : undefined}
                     onGoToOffset={
-                      store.isValidSelection(new Selection(unsignedValue, unsignedValue)) ? handleGoToOffset : undefined
+                      hasIntRepresentation && store.isValidSelection(new Selection(unsignedValue, unsignedValue))
+                        ? handleGoToOffset
+                        : undefined
                     }
                   />
                 </Grid>
                 <Grid item lg={12}>
-                  <DataDisplay dataType="Binary" dataValue={hasIntRepresentation ? binaryString : "-"} />
+                  <DataDisplay
+                    dataType="Binary"
+                    dataValue={hasIntRepresentation ? binaryString : "-"}
+                    onCopy={hasIntRepresentation ? handleCopy : undefined}
+                  />
                 </Grid>
               </Grid>
             </Container>
@@ -144,20 +152,35 @@ const DataDisplay: React.FunctionComponent<DataDisplayProps> = ({
   return (
     <Container disableGutters>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography variant="subtitle1" sx={{ fontFamily: "monospace" }} noWrap={!wrapValue}>
+        <Typography
+          data-testid={`${dataType}-value`}
+          variant="subtitle1"
+          sx={{ fontFamily: "monospace" }}
+          noWrap={!wrapValue}
+        >
           {dataValue}
         </Typography>
         <div>
           {onCopy && (
             <Tooltip title="Copy" arrow>
-              <IconButton size="small" color="inherit" onClick={() => onCopy(dataValue)}>
+              <IconButton
+                data-testid={`${dataType}-copy`}
+                size="small"
+                color="inherit"
+                onClick={() => onCopy(dataValue)}
+              >
                 <ContentCopyIcon fontSize="inherit" />
               </IconButton>
             </Tooltip>
           )}
           {onGoToOffset && (
             <Tooltip title={`Go to offset ${dataValue}`} arrow>
-              <IconButton size="small" color="inherit" onClick={() => onGoToOffset(dataValue)}>
+              <IconButton
+                data-testid={`${dataType}-goto`}
+                size="small"
+                color="inherit"
+                onClick={() => onGoToOffset(dataValue)}
+              >
                 <ForwardIcon fontSize="inherit" />
               </IconButton>
             </Tooltip>
@@ -183,25 +206,25 @@ function convertToIntegerValues(bytes: Uint8Array, bigEndian: boolean): { signed
       break;
 
     case 2:
-      signedValue = dataView.getInt16(0, bigEndian);
-      unsignedValue = dataView.getUint16(0, bigEndian);
+      signedValue = dataView.getInt16(0, !bigEndian);
+      unsignedValue = dataView.getUint16(0, !bigEndian);
       break;
 
     case 4:
-      signedValue = dataView.getInt32(0, bigEndian);
-      unsignedValue = dataView.getUint32(0, bigEndian);
+      signedValue = dataView.getInt32(0, !bigEndian);
+      unsignedValue = dataView.getUint32(0, !bigEndian);
       break;
 
     case 3:
     case 5:
     case 6:
     case 7:
-      signedValue = unsignedValue = convertNonStandardIntegerSize(bytes, bigEndian);
+      signedValue = unsignedValue = convertNonStandardIntegerSize(bytes, !bigEndian);
       break;
 
     case 8:
-      signedValue = Number(dataView.getBigInt64(0, bigEndian));
-      unsignedValue = Number(dataView.getBigUint64(0, bigEndian));
+      signedValue = Number(dataView.getBigInt64(0, !bigEndian));
+      unsignedValue = Number(dataView.getBigUint64(0, !bigEndian));
       break;
 
     default:
@@ -243,5 +266,5 @@ function convertToBinaryString(bytes: Uint8Array, bigEndian: boolean): string {
   }
 
   const binaryString = bytesCopy.reduce((str, byte) => str + byte.toString(2).padStart(8, "0"), "");
-  return binaryString.replace(/(.{8})/g, "$1 ");
+  return binaryString.replace(/(.{8})/g, "$1 ").trim();
 }

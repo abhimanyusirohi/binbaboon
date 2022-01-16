@@ -17,7 +17,7 @@ export interface GoToOffsetDialogProps {
 }
 
 export const GoToOffsetDialog: React.FunctionComponent<GoToOffsetDialogProps> = ({ store, onClose }) => {
-  const [offset, setOffset] = useState<number>(0);
+  const [offset, setOffset] = useState<number>(store.selectionStore.currentSelection.fromOffset);
 
   const offsetValid = () => {
     return offset >= 0 && offset < store.fileInfo.size;

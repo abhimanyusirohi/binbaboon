@@ -16,7 +16,7 @@ describe("SelectionViewer", () => {
   let store: SelectionStore;
 
   beforeEach(() => {
-    const data = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    const data = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 65, 66]);
     store = new SelectionStore(data);
     render(<SelectionViewer store={store} />);
   });
@@ -36,6 +36,7 @@ describe("SelectionViewer", () => {
     ${0}       | ${5}     | ${"6 bytes selected (0 ➔ 5)"} | ${"01 02 03 04 05 06"}
     ${0}       | ${6}     | ${"7 bytes selected (0 ➔ 6)"} | ${"01 02 03 04 05 06 07"}
     ${0}       | ${7}     | ${"8 bytes selected (0 ➔ 7)"} | ${"01 02 03 04 05 06 07 08"}
+    ${0}       | ${8}     | ${"9 bytes selected (0 ➔ 8)"} | ${"01 02 03 04 05 06 07 08 41"}
   `(
     "must display correct text for selection $fromOffset to $toOffset",
     ({ fromOffset, toOffset, expectedInfo, expectedHex }) => {
@@ -57,14 +58,16 @@ describe("SelectionViewer", () => {
     ${0}       | ${5}     | ${"67307013"}          | ${"67307013"}          | ${"00000000 00000000 00000001 00000010 00000011 00000100 00000101 00000110"}
     ${0}       | ${6}     | ${"67569157"}          | ${"67569157"}          | ${"00000000 00000001 00000010 00000011 00000100 00000101 00000110 00000111"}
     ${0}       | ${7}     | ${"72623859790382850"} | ${"72623859790382850"} | ${"00000001 00000010 00000011 00000100 00000101 00000110 00000111 00001000"}
+    ${0}       | ${8}     | ${"-"}                 | ${"-"}                 | ${"-"}
   `(
     "must display correct big-endian values for selection $fromOffset to $toOffset",
     ({ fromOffset, toOffset, expectedInt, expectedUInt, expectedBinary }) => {
       store.setSelection(new Selection(fromOffset, toOffset));
 
-      const byteCount = toOffset - fromOffset + 1;
-      expect(screen.getByTestId(`Int${byteCount * 8}-value`)).toHaveTextContent(expectedInt);
-      expect(screen.getByTestId(`UInt${byteCount * 8}-value`)).toHaveTextContent(expectedUInt);
+      let bitsCount: number | string = (toOffset - fromOffset + 1) * 8;
+      bitsCount = bitsCount <= 64 ? bitsCount : "";
+      expect(screen.getByTestId(`Int${bitsCount}-value`)).toHaveTextContent(expectedInt);
+      expect(screen.getByTestId(`UInt${bitsCount}-value`)).toHaveTextContent(expectedUInt);
       expect(screen.getByTestId(`Binary-value`)).toHaveTextContent(expectedBinary);
     }
   );
@@ -79,6 +82,7 @@ describe("SelectionViewer", () => {
     ${0}       | ${5}     | ${"50595078"}           | ${"50595078"}           | ${"00000110 00000101 00000100 00000011 00000010 00000001 00000000 00000000"}
     ${0}       | ${6}     | ${"67438087"}           | ${"67438087"}           | ${"00000111 00000110 00000101 00000100 00000011 00000010 00000001 00000000"}
     ${0}       | ${7}     | ${"578437695752307200"} | ${"578437695752307200"} | ${"00001000 00000111 00000110 00000101 00000100 00000011 00000010 00000001"}
+    ${0}       | ${8}     | ${"-"}                  | ${"-"}                  | ${"-"}
   `(
     "must display correct little-endian values for selection $fromOffset to $toOffset",
     ({ fromOffset, toOffset, expectedInt, expectedUInt, expectedBinary }) => {
@@ -87,9 +91,10 @@ describe("SelectionViewer", () => {
       const leButton = screen.getByRole("button", { name: /Little endian/i });
       userEvent.click(leButton);
 
-      const byteCount = toOffset - fromOffset + 1;
-      expect(screen.getByTestId(`Int${byteCount * 8}-value`)).toHaveTextContent(expectedInt);
-      expect(screen.getByTestId(`UInt${byteCount * 8}-value`)).toHaveTextContent(expectedUInt);
+      let bitsCount: number | string = (toOffset - fromOffset + 1) * 8;
+      bitsCount = bitsCount <= 64 ? bitsCount : "";
+      expect(screen.getByTestId(`Int${bitsCount}-value`)).toHaveTextContent(expectedInt);
+      expect(screen.getByTestId(`UInt${bitsCount}-value`)).toHaveTextContent(expectedUInt);
       expect(screen.getByTestId(`Binary-value`)).toHaveTextContent(expectedBinary);
     }
   );
@@ -122,7 +127,17 @@ describe("SelectionViewer", () => {
       userEvent.click(screen.getByTestId("Binary-copy"));
       expect(navigator.clipboard.writeText).toBeCalledWith("00000001 00000010 00000011 00000100");
     });
+
+    test("must copy ASCII value to the clipboard", () => {
+      userEvent.click(screen.getByTestId("ASCII-copy"));
+      expect(navigator.clipboard.writeText).toBeCalledWith(String.fromCharCode(...store.selectedData));
+    });
   });
+
+  test.todo("must go to offset from int");
+  test.todo("must go to offset from uint");
+  test.todo("must not display go to offset button when int value is not a valid offset");
+  test.todo("must not display go to offset button when uint value is not a valid offset");
 
   // test("must go to offset from int", () => {
   //   store.setSelection(new Selection(0, 0));

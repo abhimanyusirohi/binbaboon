@@ -14,7 +14,7 @@ import { ApplicationStore, FileInfo } from "./stores/ApplicationStore";
 import { App } from "./components/App";
 import { AlertDialog } from "./components/AlertDialog";
 
-import baboonImage from "./baboon.png";
+import baboonImage from "./baboon.svg";
 import backgroundImage from "./background.png";
 
 import "./index.css";
@@ -78,41 +78,29 @@ const Home: React.FunctionComponent = () => {
         backgroundSize: "4%"
       }}
     >
-      <Stack direction="row" spacing={1}>
-        <Avatar variant="rounded" sx={{ bgcolor: blue[600] }}>
-          B
-        </Avatar>
-        <Avatar variant="rounded" sx={{ bgcolor: blue[300] }}>
-          I
-        </Avatar>
-        <Avatar variant="rounded" sx={{ bgcolor: blue[300] }}>
-          N
-        </Avatar>
-        <Avatar variant="rounded" sx={{ bgcolor: blue[600] }}>
-          B
-        </Avatar>
-        <Avatar variant="rounded" sx={{ bgcolor: blue[300] }}>
-          A
-        </Avatar>
-        <Avatar variant="rounded" sx={{ bgcolor: blue[300] }}>
-          B
-        </Avatar>
-        <Avatar variant="rounded" sx={{ bgcolor: blue[300] }}>
-          O
-        </Avatar>
-        <Avatar variant="rounded" sx={{ bgcolor: blue[300] }}>
-          O
-        </Avatar>
-        <Avatar variant="rounded" sx={{ bgcolor: blue[300] }}>
-          N
-        </Avatar>
-      </Stack>
+      <Banner text="BinBaboon" />
       <img src={baboonImage} alt="BinBaboon" width={256} height={256} />
       <Button variant="contained" size="large" startIcon={<FileOpenIcon />} onClick={showOpenFileDialog}>
         Select File
       </Button>
       <Typography variant="subtitle2">File remains in your browser. It is not uploaded anywhere</Typography>
       {alertMessage && <AlertDialog infoText={alertMessage} onClose={() => setAlertMessage("")} />}
+    </Stack>
+  );
+};
+
+const Banner: React.FunctionComponent<{ text: string }> = ({ text }) => {
+  return (
+    <Stack direction="row" spacing={1}>
+      {[...text].map((character, index) => (
+        <Avatar
+          key={`${character}-${index}`}
+          variant="rounded"
+          sx={{ bgcolor: blue[character === character.toLocaleUpperCase() ? 600 : 300] }}
+        >
+          {character.toLocaleUpperCase()}
+        </Avatar>
+      ))}
     </Stack>
   );
 };

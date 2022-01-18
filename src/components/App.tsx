@@ -8,7 +8,6 @@ import Stack from "@mui/material/Stack";
 import { AddBookmarkDialog } from "./AddBookmarkDialog";
 import { BookmarkViewer } from "./BookmarkViewer";
 import { SelectionViewer } from "./SelectionViewer";
-import { FileInfoViewer } from "./FileInfoViewer";
 import { GoToOffsetDialog } from "./GoToOffsetDialog";
 import { HexViewer } from "./HexViewer";
 import { AlertDialog } from "./AlertDialog";
@@ -59,7 +58,6 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
         </Grid>
         <Grid item lg={3}>
           <Stack spacing={1}>
-            <FileInfoViewer fileInfo={applicationStore.fileInfo} />
             <BookmarkViewer
               bookmarkStore={applicationStore.bookmarkStore}
               selectionStore={applicationStore.selectionStore}

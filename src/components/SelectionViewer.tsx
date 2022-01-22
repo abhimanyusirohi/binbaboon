@@ -8,7 +8,6 @@ import CardHeader from "@mui/material/CardHeader";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
@@ -63,71 +62,69 @@ export const SelectionViewer: React.FunctionComponent<SelectionViewerProps> = ob
   } ➔ ${store.currentSelection.toOffset})`;
 
   return (
-    <Paper elevation={2}>
-      <Card sx={{ minWidth: 275 }}>
-        <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: blue[500] }} aria-label="selection">
-              <SelectAllIcon />
-            </Avatar>
-          }
-          title="Selection"
-          subheader={subheader}
-        />
+    <Card>
+      <CardHeader
+        avatar={
+          <Avatar sx={{ bgcolor: blue[500] }} aria-label="selection">
+            <SelectAllIcon />
+          </Avatar>
+        }
+        title="Selection"
+        subheader={subheader}
+      />
 
-        <CardContent>
-          <Stack direction="column" spacing={2} divider={<Divider orientation="horizontal" flexItem />}>
-            <DataDisplay dataType={`Hex`} dataValue={hexString} wrapValue={false} onCopy={handleCopy} />
-            <Container disableGutters>
-              <ToggleButtonGroup
-                size="small"
-                value={bigEndian}
-                exclusive
-                fullWidth
-                onChange={(_, endianess) => setBigEndian(endianess)}
-              >
-                <ToggleButton value={true}>Big endian</ToggleButton>
-                <ToggleButton value={false}>Little endian</ToggleButton>
-              </ToggleButtonGroup>
-              <Grid container spacing={2} mt={1}>
-                <Grid item lg={12}>
-                  <DataDisplay
-                    dataType={`Int${integerSize}`}
-                    dataValue={hasIntRepresentation ? signedValue.toString() : "-"}
-                    onCopy={hasIntRepresentation ? handleCopy : undefined}
-                    onGoToOffset={
-                      hasIntRepresentation && store.isValidSelection(new Selection(signedValue, signedValue))
-                        ? handleGoToOffset
-                        : undefined
-                    }
-                  />
-                </Grid>
-                <Grid item lg={12}>
-                  <DataDisplay
-                    dataType={`UInt${integerSize}`}
-                    dataValue={hasIntRepresentation ? unsignedValue.toString() : "-"}
-                    onCopy={hasIntRepresentation ? handleCopy : undefined}
-                    onGoToOffset={
-                      hasIntRepresentation && store.isValidSelection(new Selection(unsignedValue, unsignedValue))
-                        ? handleGoToOffset
-                        : undefined
-                    }
-                  />
-                </Grid>
-                <Grid item lg={12}>
-                  <DataDisplay
-                    dataType="Binary"
-                    dataValue={hasIntRepresentation ? binaryString : "-"}
-                    onCopy={hasIntRepresentation ? handleCopy : undefined}
-                  />
-                </Grid>
+      <CardContent>
+        <Stack direction="column" spacing={2} divider={<Divider orientation="horizontal" flexItem />}>
+          <DataDisplay dataType={`Hex`} dataValue={hexString} wrapValue={false} onCopy={handleCopy} />
+          <Container disableGutters>
+            <ToggleButtonGroup
+              size="small"
+              value={bigEndian}
+              exclusive
+              fullWidth
+              onChange={(_, endianess) => setBigEndian(endianess)}
+            >
+              <ToggleButton value={true}>Big endian</ToggleButton>
+              <ToggleButton value={false}>Little endian</ToggleButton>
+            </ToggleButtonGroup>
+            <Grid container spacing={2} mt={1}>
+              <Grid item lg={12}>
+                <DataDisplay
+                  dataType={`Int${integerSize}`}
+                  dataValue={hasIntRepresentation ? signedValue.toString() : "-"}
+                  onCopy={hasIntRepresentation ? handleCopy : undefined}
+                  onGoToOffset={
+                    hasIntRepresentation && store.isValidSelection(new Selection(signedValue, signedValue))
+                      ? handleGoToOffset
+                      : undefined
+                  }
+                />
               </Grid>
-            </Container>
-            <DataDisplay dataType={`ASCII`} dataValue={asciiString} wrapValue={false} onCopy={handleCopy} />
-          </Stack>
-        </CardContent>
-      </Card>
-    </Paper>
+              <Grid item lg={12}>
+                <DataDisplay
+                  dataType={`UInt${integerSize}`}
+                  dataValue={hasIntRepresentation ? unsignedValue.toString() : "-"}
+                  onCopy={hasIntRepresentation ? handleCopy : undefined}
+                  onGoToOffset={
+                    hasIntRepresentation && store.isValidSelection(new Selection(unsignedValue, unsignedValue))
+                      ? handleGoToOffset
+                      : undefined
+                  }
+                />
+              </Grid>
+              <Grid item lg={12}>
+                <DataDisplay
+                  dataType="Binary"
+                  dataValue={hasIntRepresentation ? binaryString : "-"}
+                  onCopy={hasIntRepresentation ? handleCopy : undefined}
+                />
+              </Grid>
+            </Grid>
+          </Container>
+          <DataDisplay dataType={`ASCII`} dataValue={asciiString} wrapValue={false} onCopy={handleCopy} />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 });
 

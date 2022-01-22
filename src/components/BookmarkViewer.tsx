@@ -5,7 +5,6 @@ import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import Paper from "@mui/material/Paper";
 import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
 import Box from "@mui/material/Box";
@@ -105,34 +104,32 @@ export const BookmarkViewer: React.FunctionComponent<BookmarkViewerProps> = obse
       ));
 
     return (
-      <Paper elevation={2}>
-        <Card sx={{ minWidth: 275 }}>
-          <CardHeader
-            avatar={
-              <Avatar sx={{ bgcolor: blue[500] }} aria-label="bookmarks">
-                <BookmarkIcon />
-              </Avatar>
-            }
-            title="Bookmarks"
-            subheader="Make bytes meaningful by adding bookmarks"
-          />
-          <CardContent sx={{ overflow: "auto" }}>
-            {bookmarkStore.bookmarkCount > 0 && (
-              <TreeView
-                defaultCollapseIcon={<ExpandMoreIcon />}
-                defaultExpandIcon={<ChevronRightIcon />}
-                expanded={expanded}
-                selected={selected}
-                onNodeToggle={handleToggle}
-                onNodeSelect={handleSelect}
-                sx={{ height: 500 }}
-              >
-                {renderTree(bookmarkStore.bookmarkCollection.bookmarks)}
-              </TreeView>
-            )}
-          </CardContent>
-        </Card>
-      </Paper>
+      <Card>
+        <CardHeader
+          avatar={
+            <Avatar sx={{ bgcolor: blue[500] }} aria-label="bookmarks">
+              <BookmarkIcon />
+            </Avatar>
+          }
+          title="Bookmarks"
+          subheader="Make bytes meaningful by adding bookmarks"
+        />
+        <CardContent sx={{ overflow: "auto" }}>
+          {bookmarkStore.bookmarkCount > 0 && (
+            <TreeView
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+              expanded={expanded}
+              selected={selected}
+              onNodeToggle={handleToggle}
+              onNodeSelect={handleSelect}
+              sx={{ height: 500 }}
+            >
+              {renderTree(bookmarkStore.bookmarkCollection.bookmarks)}
+            </TreeView>
+          )}
+        </CardContent>
+      </Card>
     );
   }
 );

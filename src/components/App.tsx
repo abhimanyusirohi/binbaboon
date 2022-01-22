@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
 
 import { AddBookmarkDialog } from "./AddBookmarkDialog";
 import { BookmarkViewer } from "./BookmarkViewer";
@@ -57,12 +56,10 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
           <MainToolbar store={applicationStore} onCommand={onToolbarCommand} />
         </Grid>
         <Grid item lg={3}>
-          <Stack spacing={1}>
-            <BookmarkViewer
-              bookmarkStore={applicationStore.bookmarkStore}
-              selectionStore={applicationStore.selectionStore}
-            />
-          </Stack>
+          <BookmarkViewer
+            bookmarkStore={applicationStore.bookmarkStore}
+            selectionStore={applicationStore.selectionStore}
+          />
         </Grid>
         <Grid item lg={6}>
           <HexViewer store={applicationStore} />

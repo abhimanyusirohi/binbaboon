@@ -31,6 +31,18 @@ export const HexViewer: React.FunctionComponent<HexViewerProps> = observer(({ st
   const isMouseDown = useRef<boolean>(false);
   const [rows, setRows] = useState<Uint8Array[]>([]);
   const gridRef = useRef<FixedSizeList>(null);
+  const [windowSize, setWindowSize] = useState({
+    x: window.innerWidth,
+    y: window.innerHeight
+  });
+
+  const updateSize = () =>
+    setWindowSize({
+      x: window.innerWidth,
+      y: window.innerHeight
+    });
+
+  useEffect(() => (window.onresize = updateSize), []);
 
   // Called once on startup to break the data into fixed size rows
   useEffect(() => {
@@ -98,14 +110,15 @@ export const HexViewer: React.FunctionComponent<HexViewerProps> = observer(({ st
     gridRef.current?.scrollToItem(rows.length - 1, "end");
   };
 
+  const itemSize = 0.015 * windowSize.x;
   return (
     <Paper elevation={2}>
       <HexViewerHeaderRow count={bytesPerRow} onScrollTop={scrollToTop} onScrollBottom={scrollToBottom} />
       <FixedSizeList
         ref={gridRef}
-        height={750}
+        height={0.85 * windowSize.y}
         itemCount={rows.length}
-        itemSize={28}
+        itemSize={itemSize}
         itemData={{
           rows,
           bytesPerRow,
@@ -147,16 +160,16 @@ const FixedSizeListRow: React.FunctionComponent<FixedSizeListRowProps> = observe
         .length > 0;
 
     return (
-      <Grid container style={style}>
+      <Grid container style={style} columns={16} flexWrap="nowrap" alignItems="center">
         <Grid item lg={1} display="flex" alignItems="center" justifyContent="center">
           {rowHasBookmarks && <BookmarkIcon className="Rotated90Clockwise" />}
         </Grid>
-        <Grid item xs={1} display="flex" alignItems="center" justifyContent="center">
+        <Grid item xs={2} display="flex" alignItems="center" justifyContent="center">
           <Tooltip title={rowOffset} arrow>
             <span>{rowOffset.toString(16).padStart(6, "0").toUpperCase()}</span>
           </Tooltip>
         </Grid>
-        <Grid item lg={6}>
+        <Grid item lg={9}>
           <RawByteSequence
             data={rowData}
             dataOffset={rowOffset}
@@ -194,9 +207,11 @@ const RawByteSequence: React.FunctionComponent<RawByteSequenceProps> = observer(
         {Array.from(data).map((value, index) => (
           <span
             key={`byte-${dataOffset}-${index}`}
-            className={classNames("Byte", {
-              ByteSelected: selectionStore.currentSelection.containsOffset(dataOffset + index)
-            })}
+            className={classNames(
+              "Byte",
+              { ByteSelected: selectionStore.currentSelection.containsOffset(dataOffset + index) },
+              { ByteSequenceDividerMargin: index === 8 }
+            )}
             onMouseDown={(e) => onMouseEvent(e, dataOffset + index)}
             onMouseUp={(e) => onMouseEvent(e, dataOffset + index)}
             onMouseMove={(e) => onMouseEvent(e, dataOffset + index)}
@@ -257,21 +272,17 @@ const HexViewerHeaderRow: React.FunctionComponent<HexViewerHeaderRowProps> = ({
 }) => {
   // Make sequence of values
   const headerValues = [...Array<number>(count)].map((_, index) => index);
-
-  const bytes: JSX.Element[] = [];
-  headerValues.forEach((value, index) =>
-    bytes.push(
-      <span key={index} className="Byte HeaderByte">
-        {value.toString(16).toUpperCase().padStart(2, "0")}
-      </span>
-    )
-  );
+  const bytes = headerValues.map((value, index) => (
+    <span key={index} className={classNames("Byte", "HeaderByte", { ByteSequenceDividerMargin: index === 8 })}>
+      {value.toString(16).toUpperCase().padStart(2, "0")}
+    </span>
+  ));
 
   return (
-    <Grid container className="NoTextSelect HeaderRow">
+    <Grid container className="NoTextSelect HeaderRow" columns={16}>
       <Grid item lg={1} />
-      <Grid item lg={1} />
-      <Grid item lg={6}>
+      <Grid item lg={2} />
+      <Grid item lg={9}>
         {bytes}
       </Grid>
       <Grid item lg={4}>

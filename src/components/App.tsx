@@ -11,6 +11,7 @@ import { GoToOffsetDialog } from "./GoToOffsetDialog";
 import { HexViewer } from "./HexViewer";
 import { AlertDialog } from "./AlertDialog";
 import { MainToolbar } from "./MainToolbar";
+import { SearchView } from "./SearchView";
 
 import { ApplicationStore } from "../stores/ApplicationStore";
 
@@ -66,6 +67,7 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
         </Grid>
         <Grid item lg={3}>
           <SelectionViewer store={applicationStore.selectionStore} />
+          <SearchView store={applicationStore} />
         </Grid>
       </Grid>
       {addBookmarkDialogShown && (

@@ -104,10 +104,10 @@ export const BookmarkViewer: React.FunctionComponent<BookmarkViewerProps> = obse
       ));
 
     return (
-      <Card>
+      <Card elevation={4}>
         <CardHeader
           avatar={
-            <Avatar sx={{ bgcolor: blue[500] }} aria-label="bookmarks">
+            <Avatar sx={{ bgcolor: blue[500] }}>
               <BookmarkIcon />
             </Avatar>
           }

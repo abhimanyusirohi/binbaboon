@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
 import Avatar from "@mui/material/Avatar";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
 import CardHeader from "@mui/material/CardHeader";
 import Container from "@mui/material/Container";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -20,6 +20,7 @@ import { blue } from "@mui/material/colors";
 import ContentCopyIcon from "@mui/icons-material/ContentCopyOutlined";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 import ForwardIcon from "@mui/icons-material/ForwardOutlined";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { Selection } from "../stores/Selection";
 import { SelectionStore } from "../stores/SelectionStore";
@@ -45,7 +46,6 @@ export const SelectionViewer: React.FunctionComponent<SelectionViewerProps> = ob
   const hexString = Array.from(store.selectedData)
     .map((value) => value.toString(16).toUpperCase().padStart(2, "0"))
     .join(" ");
-  const asciiString = String.fromCharCode(...store.selectedData);
 
   const handleCopy = (value: string): void => {
     navigator.clipboard.writeText(value);
@@ -62,19 +62,20 @@ export const SelectionViewer: React.FunctionComponent<SelectionViewerProps> = ob
   } ➔ ${store.currentSelection.toOffset})`;
 
   return (
-    <Card>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: blue[500] }} aria-label="selection">
-            <SelectAllIcon />
-          </Avatar>
-        }
-        title="Selection"
-        subheader={subheader}
-      />
-
-      <CardContent>
-        <Stack direction="column" spacing={2} divider={<Divider orientation="horizontal" flexItem />}>
+    <Accordion elevation={4}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <CardHeader
+          avatar={
+            <Avatar sx={{ bgcolor: blue[500] }}>
+              <SelectAllIcon />
+            </Avatar>
+          }
+          title="Selection"
+          subheader={subheader}
+        />
+      </AccordionSummary>
+      <AccordionDetails>
+        <Stack direction="column" spacing={1}>
           <DataDisplay dataType={`Hex`} dataValue={hexString} wrapValue={false} onCopy={handleCopy} />
           <Container disableGutters>
             <ToggleButtonGroup
@@ -87,7 +88,7 @@ export const SelectionViewer: React.FunctionComponent<SelectionViewerProps> = ob
               <ToggleButton value={true}>Big endian</ToggleButton>
               <ToggleButton value={false}>Little endian</ToggleButton>
             </ToggleButtonGroup>
-            <Grid container spacing={2} mt={1}>
+            <Grid container spacing={1} mt={1}>
               <Grid item lg={12}>
                 <DataDisplay
                   dataType={`Int${integerSize}`}
@@ -121,10 +122,9 @@ export const SelectionViewer: React.FunctionComponent<SelectionViewerProps> = ob
               </Grid>
             </Grid>
           </Container>
-          <DataDisplay dataType={`ASCII`} dataValue={asciiString} wrapValue={false} onCopy={handleCopy} />
         </Stack>
-      </CardContent>
-    </Card>
+      </AccordionDetails>
+    </Accordion>
   );
 });
 

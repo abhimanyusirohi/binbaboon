@@ -41,8 +41,8 @@ export const AddBookmarkDialog: React.FunctionComponent<AddBookmarkDialogProps> 
   };
 
   return (
-    <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Add Bookmark</DialogTitle>
+    <Dialog open={true} onClose={onClose}>
+      <DialogTitle>Add Bookmark</DialogTitle>
       <DialogContent>
         <DialogContentText>
           {`A bookmark will be created for data from zero-based offset [${selection.fromOffset}] to offset [${selection.toOffset}]`}

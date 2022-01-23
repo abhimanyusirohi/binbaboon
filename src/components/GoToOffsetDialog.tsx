@@ -30,8 +30,8 @@ export const GoToOffsetDialog: React.FunctionComponent<GoToOffsetDialogProps> = 
   };
 
   return (
-    <Dialog open={true} onClose={onClose} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Go To Offset</DialogTitle>
+    <Dialog open={true} onClose={onClose}>
+      <DialogTitle>Go To Offset</DialogTitle>
       <DialogContent>
         <DialogContentText>{`Specify an offset value between 0 and ${store.fileInfo.size - 1}`}</DialogContentText>
         <TextField

@@ -11,7 +11,6 @@ import Typography from "@mui/material/Typography";
 
 import ArticleIcon from "@mui/icons-material/ArticleOutlined";
 import CloseIcon from "@mui/icons-material/CloseOutlined";
-import SearchIcon from "@mui/icons-material/SearchOutlined";
 import ForwardIcon from "@mui/icons-material/ForwardOutlined";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAddOutlined";
 
@@ -42,11 +41,6 @@ export const MainToolbar: React.FunctionComponent<MainToolbarProps> = observer((
         <Tooltip title="Go to offset" arrow>
           <IconButton size="large" color="inherit" onClick={() => onCommand("binbaboon.selection.gotooffset")}>
             <ForwardIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Search" arrow>
-          <IconButton size="large" color="inherit">
-            <SearchIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title="Close this file" arrow>

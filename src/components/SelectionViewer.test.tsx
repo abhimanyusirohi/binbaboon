@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 
-import { SelectionViewer } from "./SelectionViewer";
+import { SelectionView } from "./SelectionView";
 import { SelectionStore } from "../stores/SelectionStore";
 import { Selection } from "../stores/Selection";
 
@@ -13,13 +13,13 @@ Object.assign(navigator, {
   }
 });
 
-describe("SelectionViewer", () => {
+describe("SelectionView", () => {
   let store: SelectionStore;
 
   beforeEach(() => {
     const data = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 65, 66]);
     store = new SelectionStore(data);
-    render(<SelectionViewer store={store} />);
+    render(<SelectionView store={store} />);
   });
 
   test("must default to big endian", () => {

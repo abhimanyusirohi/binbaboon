@@ -96,7 +96,7 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
   };
 
   return (
-    <Accordion elevation={4}>
+    <Accordion elevation={4} expanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <CardHeader
           avatar={

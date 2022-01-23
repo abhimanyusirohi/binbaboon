@@ -17,17 +17,17 @@ import ArrowDownIcon from "@mui/icons-material/ArrowCircleDownOutlined";
 
 import { observer } from "mobx-react-lite";
 
-import "./HexViewer.css";
+import "./HexView.css";
 import { SelectionStore } from "../stores/SelectionStore";
 
 type ByteMouseEvent = (event: React.MouseEvent, offset: number) => void;
 
-export interface HexViewerProps {
+export interface HexViewProps {
   store: ApplicationStore;
   bytesPerRow?: number;
 }
 
-export const HexViewer: React.FunctionComponent<HexViewerProps> = observer(({ store, bytesPerRow = 16 }) => {
+export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store, bytesPerRow = 16 }) => {
   const isMouseDown = useRef<boolean>(false);
   const [rows, setRows] = useState<Uint8Array[]>([]);
   const gridRef = useRef<FixedSizeList>(null);
@@ -113,7 +113,7 @@ export const HexViewer: React.FunctionComponent<HexViewerProps> = observer(({ st
   const itemSize = 0.015 * windowSize.x;
   return (
     <Paper elevation={2}>
-      <HexViewerHeaderRow count={bytesPerRow} onScrollTop={scrollToTop} onScrollBottom={scrollToBottom} />
+      <HexViewHeaderRow count={bytesPerRow} onScrollTop={scrollToTop} onScrollBottom={scrollToBottom} />
       <FixedSizeList
         ref={gridRef}
         height={0.85 * windowSize.y}
@@ -256,20 +256,16 @@ const ASCIIDataSequence: React.FunctionComponent<ASCIIDataSequenceProps> = obser
   }
 );
 
-interface HexViewerHeaderRowProps {
+interface HexViewHeaderRowProps {
   count: number;
   onScrollTop: () => void;
   onScrollBottom: () => void;
 }
 
 /**
- * Component that represents the non-clickable header of the viewer
+ * Component that represents the non-clickable header of the view
  */
-const HexViewerHeaderRow: React.FunctionComponent<HexViewerHeaderRowProps> = ({
-  count,
-  onScrollTop,
-  onScrollBottom
-}) => {
+const HexViewHeaderRow: React.FunctionComponent<HexViewHeaderRowProps> = ({ count, onScrollTop, onScrollBottom }) => {
   // Make sequence of values
   const headerValues = [...Array<number>(count)].map((_, index) => index);
   const bytes = headerValues.map((value, index) => (

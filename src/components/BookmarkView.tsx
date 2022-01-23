@@ -29,17 +29,17 @@ import { SelectionStore } from "../stores/SelectionStore";
 /**
  * TODOs
  * Top: Search, Expand All, Collapse All
- * Select a bookmark should select in hexviewer.
- *    BookmarkViewer sets selectedBookmark which sets the selection which shows in HexViewer
+ * Select a bookmark should select in hexview.
+ *    BookmarkView sets selectedBookmark which sets the selection which shows in HexView
  * Delete bookmark - delete icon on same row
  */
 
-export interface BookmarkViewerProps {
+export interface BookmarkViewProps {
   bookmarkStore: BookmarkStore;
   selectionStore: SelectionStore;
 }
 
-export const BookmarkViewer: React.FunctionComponent<BookmarkViewerProps> = observer(
+export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer(
   ({ bookmarkStore, selectionStore }) => {
     const [expanded, setExpanded] = useState<string[]>([]);
     const [selected, setSelected] = useState<string>("");

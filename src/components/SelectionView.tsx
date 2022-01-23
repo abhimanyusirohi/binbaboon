@@ -32,11 +32,11 @@ import { SelectionStore } from "../stores/SelectionStore";
  * 3. Always show int representation, show - when not available [DONE]
  */
 
-export interface SelectionViewerProps {
+export interface SelectionViewProps {
   store: SelectionStore;
 }
 
-export const SelectionViewer: React.FunctionComponent<SelectionViewerProps> = observer(({ store }) => {
+export const SelectionView: React.FunctionComponent<SelectionViewProps> = observer(({ store }) => {
   const [bigEndian, setBigEndian] = useState<boolean>(true);
 
   const hasIntRepresentation = store.selectedData.length <= 8;
@@ -62,7 +62,7 @@ export const SelectionViewer: React.FunctionComponent<SelectionViewerProps> = ob
   } ➔ ${store.currentSelection.toOffset})`;
 
   return (
-    <Accordion elevation={4}>
+    <Accordion elevation={4} expanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <CardHeader
           avatar={

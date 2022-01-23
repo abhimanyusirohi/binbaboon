@@ -5,10 +5,10 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 
 import { AddBookmarkDialog } from "./AddBookmarkDialog";
-import { BookmarkViewer } from "./BookmarkViewer";
-import { SelectionViewer } from "./SelectionViewer";
+import { BookmarkView } from "./BookmarkView";
+import { SelectionView } from "./SelectionView";
 import { GoToOffsetDialog } from "./GoToOffsetDialog";
-import { HexViewer } from "./HexViewer";
+import { HexView } from "./HexView";
 import { AlertDialog } from "./AlertDialog";
 import { MainToolbar } from "./MainToolbar";
 import { SearchView } from "./SearchView";
@@ -57,16 +57,16 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
           <MainToolbar store={applicationStore} onCommand={onToolbarCommand} />
         </Grid>
         <Grid item lg={3}>
-          <BookmarkViewer
+          <BookmarkView
             bookmarkStore={applicationStore.bookmarkStore}
             selectionStore={applicationStore.selectionStore}
           />
         </Grid>
         <Grid item lg={6}>
-          <HexViewer store={applicationStore} />
+          <HexView store={applicationStore} />
         </Grid>
         <Grid item lg={3}>
-          <SelectionViewer store={applicationStore.selectionStore} />
+          <SelectionView store={applicationStore.selectionStore} />
           <SearchView store={applicationStore} />
         </Grid>
       </Grid>

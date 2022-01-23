@@ -5,12 +5,13 @@ import Avatar from "@mui/material/Avatar";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import Button from "@mui/material/Button";
 import CardHeader from "@mui/material/CardHeader";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
-import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -25,19 +26,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Selection } from "../stores/Selection";
 import { SelectionStore } from "../stores/SelectionStore";
 
-/**
- * TODO:
- * 1. Int24, Int40, Int48, Int56 [DONE]
- * 2. Copy selected HEX values (without spaces)
- * 3. Always show int representation, show - when not available [DONE]
- */
-
 export interface SelectionViewProps {
   store: SelectionStore;
 }
 
 export const SelectionView: React.FunctionComponent<SelectionViewProps> = observer(({ store }) => {
   const [bigEndian, setBigEndian] = useState<boolean>(true);
+  const [notificationMessage, setNotificationMessage] = useState<string>("");
 
   const hasIntRepresentation = store.selectedData.length <= 8;
   const integerSize = hasIntRepresentation ? store.selectedData.length * 8 : "";
@@ -49,6 +44,12 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
 
   const handleCopy = (value: string): void => {
     navigator.clipboard.writeText(value);
+    setNotificationMessage("Value copied");
+  };
+
+  const copySelection = (): void => {
+    navigator.clipboard.writeText(String.fromCharCode(...store.selectedData));
+    setNotificationMessage("Selected bytes copied");
   };
 
   const handleGoToOffset = (value: string): void => {
@@ -62,7 +63,7 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
   } ➔ ${store.currentSelection.toOffset})`;
 
   return (
-    <Accordion elevation={4} expanded>
+    <Accordion elevation={4} defaultExpanded disableGutters>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <CardHeader
           avatar={
@@ -77,52 +78,55 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
       <AccordionDetails>
         <Stack direction="column" spacing={1}>
           <DataDisplay dataType={`Hex`} dataValue={hexString} wrapValue={false} onCopy={handleCopy} />
-          <Container disableGutters>
-            <ToggleButtonGroup
-              size="small"
-              value={bigEndian}
-              exclusive
-              fullWidth
-              onChange={(_, endianess) => setBigEndian(endianess)}
-            >
-              <ToggleButton value={true}>Big endian</ToggleButton>
-              <ToggleButton value={false}>Little endian</ToggleButton>
-            </ToggleButtonGroup>
-            <Grid container spacing={1} mt={1}>
-              <Grid item lg={12}>
-                <DataDisplay
-                  dataType={`Int${integerSize}`}
-                  dataValue={hasIntRepresentation ? signedValue.toString() : "-"}
-                  onCopy={hasIntRepresentation ? handleCopy : undefined}
-                  onGoToOffset={
-                    hasIntRepresentation && store.isValidSelection(new Selection(signedValue, signedValue))
-                      ? handleGoToOffset
-                      : undefined
-                  }
-                />
-              </Grid>
-              <Grid item lg={12}>
-                <DataDisplay
-                  dataType={`UInt${integerSize}`}
-                  dataValue={hasIntRepresentation ? unsignedValue.toString() : "-"}
-                  onCopy={hasIntRepresentation ? handleCopy : undefined}
-                  onGoToOffset={
-                    hasIntRepresentation && store.isValidSelection(new Selection(unsignedValue, unsignedValue))
-                      ? handleGoToOffset
-                      : undefined
-                  }
-                />
-              </Grid>
-              <Grid item lg={12}>
-                <DataDisplay
-                  dataType="Binary"
-                  dataValue={hasIntRepresentation ? binaryString : "-"}
-                  onCopy={hasIntRepresentation ? handleCopy : undefined}
-                />
-              </Grid>
-            </Grid>
+          <ToggleButtonGroup
+            size="small"
+            value={bigEndian}
+            exclusive
+            fullWidth
+            onChange={(_, endianess) => setBigEndian(endianess)}
+          >
+            <ToggleButton value={true}>Big endian</ToggleButton>
+            <ToggleButton value={false}>Little endian</ToggleButton>
+          </ToggleButtonGroup>
+          <DataDisplay
+            dataType={`Int${integerSize}`}
+            dataValue={hasIntRepresentation ? signedValue.toString() : "-"}
+            onCopy={hasIntRepresentation ? handleCopy : undefined}
+            onGoToOffset={
+              hasIntRepresentation && store.isValidSelection(new Selection(signedValue, signedValue))
+                ? handleGoToOffset
+                : undefined
+            }
+          />
+          <DataDisplay
+            dataType={`UInt${integerSize}`}
+            dataValue={hasIntRepresentation ? unsignedValue.toString() : "-"}
+            onCopy={hasIntRepresentation ? handleCopy : undefined}
+            onGoToOffset={
+              hasIntRepresentation && store.isValidSelection(new Selection(unsignedValue, unsignedValue))
+                ? handleGoToOffset
+                : undefined
+            }
+          />
+          <DataDisplay
+            dataType="Binary"
+            dataValue={hasIntRepresentation ? binaryString : "-"}
+            onCopy={hasIntRepresentation ? handleCopy : undefined}
+          />
+          <Container disableGutters sx={{ textAlign: "end" }}>
+            <Button variant="contained" size="small" onClick={copySelection}>
+              Copy Bytes
+            </Button>
           </Container>
         </Stack>
+        {notificationMessage && (
+          <Snackbar
+            open={notificationMessage.length > 0}
+            autoHideDuration={2000}
+            onClose={() => setNotificationMessage("")}
+            message={notificationMessage}
+          />
+        )}
       </AccordionDetails>
     </Accordion>
   );

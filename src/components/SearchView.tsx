@@ -6,6 +6,8 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Button from "@mui/material/Button";
 import CardHeader from "@mui/material/CardHeader";
+import Checkbox from "@mui/material/Checkbox";
+import Container from "@mui/material/Container";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -95,8 +97,13 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
     return String.fromCharCode(...store.fileInfo.data.slice(fromOffset, fromOffset + count));
   };
 
+  const handleSearchKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
   return (
-    <Accordion elevation={4} expanded>
+    <Accordion elevation={4} defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <CardHeader
           avatar={
@@ -109,60 +116,71 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
         />
       </AccordionSummary>
       <AccordionDetails>
-        <OutlinedInput
-          type="text"
-          autoFocus
-          fullWidth
-          size="small"
-          autoComplete="off"
-          defaultValue={searchText}
-          placeholder={searchType === "text" ? "Search text e.g. PDF" : "Search hex values e.g. FFF0"}
-          onChange={(e) => setSearchText(e.target.value)}
-          startAdornment={
-            <InputAdornment position="end">
-              <IconButton edge="start" color="primary" onClick={toggleSearchType}>
-                {searchType === "text" ? <AbcIcon /> : <HexIcon />}
-              </IconButton>
-            </InputAdornment>
-          }
-          endAdornment={
-            searchType === "text" && (
+        <Stack direction="column" alignItems="end" spacing={1}>
+          <OutlinedInput
+            type="text"
+            autoFocus
+            fullWidth
+            size="small"
+            autoComplete="off"
+            defaultValue={searchText}
+            placeholder={searchType === "text" ? "Search text e.g. PDF" : "Search hex values e.g. FFF0"}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyPress={handleSearchKeyPress}
+            startAdornment={
               <InputAdornment position="end">
-                <IconButton edge="end" color="primary" defaultChecked={true}>
-                  <TextCaseIcon />
+                <IconButton edge="start" color="primary" onClick={toggleSearchType}>
+                  {searchType === "text" ? <AbcIcon /> : <HexIcon />}
                 </IconButton>
               </InputAdornment>
-            )
-          }
-        />
-        <Button disabled={searchText.length === 0} onClick={handleSearch}>
-          Search
-        </Button>
-        <Divider>
-          <Chip label={`${searchResults.length} match${searchResults.length === 1 ? "" : "es"}`} />
-        </Divider>
-        <Stack direction="row" justifyContent="space-between">
-          <IconButton onClick={previousResult} disabled={selectedResultIndex === undefined || selectedResultIndex <= 0}>
-            <ArrowCircleLeftOutlinedIcon />
-          </IconButton>
-          <IconButton
-            onClick={nextResult}
-            disabled={selectedResultIndex === undefined || selectedResultIndex >= searchResults.length - 1}
-          >
-            <ArrowCircleRightOutlinedIcon />
-          </IconButton>
+            }
+            endAdornment={
+              searchType === "text" && (
+                <InputAdornment position="end">
+                  <Checkbox icon={<TextCaseIcon />} checkedIcon={<TextCaseIcon color="primary" />} />
+                </InputAdornment>
+              )
+            }
+          />
+          <Button size="small" variant="contained" disabled={searchText.length === 0} onClick={handleSearch}>
+            Search
+          </Button>
+          {searchResults.length > 0 && (
+            <Container disableGutters>
+              <Divider>
+                <Chip
+                  label={`${searchResults.length} match${searchResults.length === 1 ? "" : "es"}`}
+                  onDelete={() => setSearchResults([])}
+                />
+              </Divider>
+              <Stack direction="row" justifyContent="space-between">
+                <IconButton
+                  onClick={previousResult}
+                  disabled={selectedResultIndex === undefined || selectedResultIndex <= 0}
+                >
+                  <ArrowCircleLeftOutlinedIcon />
+                </IconButton>
+                <IconButton
+                  onClick={nextResult}
+                  disabled={selectedResultIndex === undefined || selectedResultIndex >= searchResults.length - 1}
+                >
+                  <ArrowCircleRightOutlinedIcon />
+                </IconButton>
+              </Stack>
+              <List dense>
+                {searchResults.map((result, index) => (
+                  <ListItemButton
+                    key={`item-${result.fromOffset}`}
+                    selected={index === selectedResultIndex}
+                    onClick={() => setSelectedResultIndex(index)}
+                  >
+                    <ListItemText primary={`${result.fromOffset}: ${getText(result.fromOffset, 32)}…`} />
+                  </ListItemButton>
+                ))}
+              </List>
+            </Container>
+          )}
         </Stack>
-        <List dense>
-          {searchResults.map((result, index) => (
-            <ListItemButton
-              key={`item-${result.fromOffset}`}
-              selected={index === selectedResultIndex}
-              onClick={() => setSelectedResultIndex(index)}
-            >
-              <ListItemText primary={`${result.fromOffset}: ${getText(result.fromOffset, 32)}…`} />
-            </ListItemButton>
-          ))}
-        </List>
       </AccordionDetails>
     </Accordion>
   );

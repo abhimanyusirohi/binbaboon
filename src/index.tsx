@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Container from "@mui/material/Container";
+import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
@@ -67,8 +70,8 @@ const Home: React.FunctionComponent = () => {
   ) : (
     <Stack
       direction="column"
-      spacing={0}
-      justifyContent="space-evenly"
+      spacing={8}
+      justifyContent="center"
       alignItems="center"
       sx={{
         height: "100vh",
@@ -83,7 +86,15 @@ const Home: React.FunctionComponent = () => {
       <Button variant="contained" size="large" startIcon={<FileOpenIcon />} onClick={showOpenFileDialog}>
         Select File
       </Button>
-      <Typography variant="subtitle2">File remains in your browser. It is not uploaded anywhere</Typography>
+      <Typography variant="overline">
+        BinBaboon keeps your file in your browser. It is not uploaded to any server
+      </Typography>
+      <Container disableGutters>
+        <Divider orientation="horizontal">
+          <Chip label={process.env.REACT_APP_VERSION} size="small" variant="outlined" />
+        </Divider>
+      </Container>
+
       {alertMessage && <AlertDialog infoText={alertMessage} onClose={() => setAlertMessage("")} />}
     </Stack>
   );

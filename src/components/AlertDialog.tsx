@@ -27,11 +27,13 @@ export const AlertDialog: React.FunctionComponent<AlertDialogProps> = ({
     <Dialog open={true} maxWidth="sm" fullWidth>
       {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent>
-        <DialogContentText>{infoText}</DialogContentText>
+        <DialogContentText textAlign="center" marginTop={2}>
+          {infoText}
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         {buttonText.map((text) => (
-          <Button autoFocus onClick={() => onClose(text)}>
+          <Button key={text} autoFocus onClick={() => onClose(text)}>
             {text}
           </Button>
         ))}

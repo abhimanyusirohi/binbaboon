@@ -40,10 +40,12 @@ const Home: React.FunctionComponent = () => {
     reader.onload = async (onloadEventArgs) => {
       const fileData = onloadEventArgs.target!.result as ArrayBuffer;
       if (fileData.byteLength === 0) {
-        setAlertMessage("The file is empty");
+        setAlertMessage(`The selected file "${file.name}" is empty`);
         return;
       } else if (fileData.byteLength > 100 * 1024 * 1024) {
-        setAlertMessage("The file is too large. Select a file that is less than 100 MB in size");
+        setAlertMessage(
+          `The selected file "${file.name}" is too large. Select a file that is less than 100 MB in size`
+        );
         return;
       }
 

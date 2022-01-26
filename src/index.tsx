@@ -84,7 +84,7 @@ const Home: React.FunctionComponent = () => {
       }}
     >
       <Banner text="BinBaboon" />
-      <img src={baboonImage} alt="BinBaboon" width={256} height={256} />
+      <img src={baboonImage} alt="BinBaboon" width="15%" />
       <Button variant="contained" size="large" startIcon={<FileOpenIcon />} onClick={showOpenFileDialog}>
         Select File
       </Button>

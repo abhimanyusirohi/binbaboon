@@ -28,9 +28,10 @@ export interface HexViewProps {
 }
 
 export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store, bytesPerRow = 16 }) => {
-  const isMouseDown = useRef<boolean>(false);
-  const [rows, setRows] = useState<Uint8Array[]>([]);
   const gridRef = useRef<FixedSizeList>(null);
+  const mouseDraggedFromOffset = useRef<number | null>(null);
+
+  const [rows, setRows] = useState<Uint8Array[]>([]);
   const [windowSize, setWindowSize] = useState({
     x: window.innerWidth,
     y: window.innerHeight
@@ -64,10 +65,6 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
     }
   }, [store.selectionStore.scrollToSelectionSignal]);
 
-  const extendSelectionTo = (offset: number): void => {
-    store.selectionStore.setSelection(new Selection(store.selectionStore.currentSelection.fromOffset, offset));
-  };
-
   // Called when mouse down event is fired for one of the bytes
   const onByteMouseEvent: ByteMouseEvent = (event: React.MouseEvent, offset: number) => {
     switch (event.type) {
@@ -79,24 +76,25 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
 
         // Shift-click to select a range
         if (event.shiftKey) {
-          extendSelectionTo(offset);
+          store.selectionStore.setSelection(new Selection(store.selectionStore.currentSelection.fromOffset, offset));
           return;
         }
 
-        isMouseDown.current = true;
-        store.selectionStore.setSelection(new Selection(offset, offset));
+        mouseDraggedFromOffset.current = offset;
+        store.selectionStore.setSelection(new Selection(mouseDraggedFromOffset.current, offset));
+
+        console.log("mousedown", mouseDraggedFromOffset.current);
         break;
 
       case "mouseup":
-        if (isMouseDown.current) {
-          isMouseDown.current = false;
-          extendSelectionTo(offset);
-        }
+        mouseDraggedFromOffset.current = null;
+        console.log("mouseup", mouseDraggedFromOffset.current);
         break;
 
       case "mousemove":
-        if (isMouseDown.current) {
-          extendSelectionTo(offset);
+        if (mouseDraggedFromOffset.current !== null) {
+          console.log("mousemove", mouseDraggedFromOffset.current, offset);
+          store.selectionStore.setSelection(new Selection(mouseDraggedFromOffset.current, offset));
         }
         break;
     }

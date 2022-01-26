@@ -27,8 +27,7 @@ export class SelectionStore {
   }
 
   public get selectedData(): Uint8Array {
-    const { fromOffset, toOffset } = this.currentSelection.normalisedSelection;
-    return this.data.slice(fromOffset, toOffset + 1);
+    return this.data.slice(this.currentSelection.fromOffset, this.currentSelection.toOffset + 1);
   }
 
   public isValidSelection(selection: Selection): boolean {

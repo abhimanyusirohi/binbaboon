@@ -82,18 +82,14 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
 
         mouseDraggedFromOffset.current = offset;
         store.selectionStore.setSelection(new Selection(mouseDraggedFromOffset.current, offset));
-
-        console.log("mousedown", mouseDraggedFromOffset.current);
         break;
 
       case "mouseup":
         mouseDraggedFromOffset.current = null;
-        console.log("mouseup", mouseDraggedFromOffset.current);
         break;
 
       case "mousemove":
         if (mouseDraggedFromOffset.current !== null) {
-          console.log("mousemove", mouseDraggedFromOffset.current, offset);
           store.selectionStore.setSelection(new Selection(mouseDraggedFromOffset.current, offset));
         }
         break;

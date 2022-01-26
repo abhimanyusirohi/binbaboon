@@ -45,7 +45,6 @@ describe("SelectionView", () => {
 
       expect(screen.getByText(expectedInfo)).toBeInTheDocument();
       expect(screen.getByTestId("Hex-value")).toHaveTextContent(expectedHex);
-      expect(screen.getByTestId("ASCII-value")).toHaveTextContent(String.fromCharCode(...store.selectedData));
     }
   );
 
@@ -129,22 +128,43 @@ describe("SelectionView", () => {
       expect(navigator.clipboard.writeText).toBeCalledWith("00000001 00000010 00000011 00000100");
     });
 
-    test("must copy ASCII value to the clipboard", () => {
-      userEvent.click(screen.getByTestId("ASCII-copy"));
-      expect(navigator.clipboard.writeText).toBeCalledWith(String.fromCharCode(...store.selectedData));
+    test("must copy bytes to the clipboard", () => {
+      userEvent.click(screen.getByRole("button", { name: /Copy Bytes/i }));
+      expect(navigator.clipboard.writeText).toBeCalledWith(String.fromCharCode(1, 2, 3, 4));
     });
   });
 
-  test.todo("must go to offset from int");
-  test.todo("must go to offset from uint");
-  test.todo("must not display go to offset button when int value is not a valid offset");
-  test.todo("must not display go to offset button when uint value is not a valid offset");
+  describe("go to offset", () => {
+    test("must display goto-offset button when selected byte value is a valid offset", () => {
+      store.setSelection(new Selection(0, 0));
 
-  // test("must go to offset from int", () => {
-  //   store.setSelection(new Selection(0, 0));
-  //   jest.spyOn(store, "setSelection");
+      // First byte has a value of 1 which is a valid offset (0-9)
+      expect(screen.getByTestId("Int8-goto")).toBeInTheDocument();
+      expect(screen.getByTestId("UInt8-goto")).toBeInTheDocument();
+    });
 
-  //   userEvent.click(screen.getByTestId("Int8-goto"));
-  //   expect(store.setSelection).toBeCalledWith({ fromOffset: 1, toOffset: 1 });
-  // });
+    test("must not display goto-offset button when selected byte value is not a valid offset", () => {
+      store.setSelection(new Selection(8, 8));
+
+      // Eighth byte has a value of 65 which is not a valid offset
+      expect(screen.queryByTestId("Int8-goto")).toBeNull();
+      expect(screen.queryByTestId("UInt8-goto")).toBeNull();
+    });
+
+    test("must go to offset from Int", () => {
+      store.setSelection(new Selection(0, 0));
+
+      userEvent.click(screen.getByTestId("Int8-goto"));
+      expect(store.currentSelection).toMatchObject({ from: 1, to: 1 });
+    });
+
+    test("must go to offset from UInt", () => {
+      store.setSelection(new Selection(0, 0));
+
+      userEvent.click(screen.getByTestId("UInt8-goto"));
+      expect(store.currentSelection).toMatchObject({ from: 1, to: 1 });
+    });
+  });
+
+  test.todo("must display notification on copy");
 });

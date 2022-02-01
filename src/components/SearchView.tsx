@@ -18,6 +18,7 @@ import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import SvgIcon, { SvgIconProps } from "@mui/material/SvgIcon";
+import Tooltip from "@mui/material/Tooltip";
 
 import SearchIcon from "@mui/icons-material/SearchOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -29,6 +30,9 @@ import { blue } from "@mui/material/colors";
 
 import { ApplicationStore } from "../stores/ApplicationStore";
 import { Selection } from "../stores/Selection";
+import { FindOption, Match } from "../stores/FileInfo";
+
+const maxResults = 250;
 
 export interface SearchViewProps {
   store: ApplicationStore;
@@ -37,45 +41,31 @@ export interface SearchViewProps {
 export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) => {
   const [searchText, setSearchText] = useState<string>("");
   const [searchType, setSearchType] = useState<"text" | "hex">("text");
-  const [selectedResultIndex, setSelectedResultIndex] = useState<number>();
-  const [searchResults, setSearchResults] = useState<Selection[]>([]);
-
-  const findAll = (): Selection[] => {
-    const firstCharASCII = searchText.charCodeAt(0);
-    const matches: Selection[] = [];
-    let findIndex = 0;
-    do {
-      // Find the first matching value
-      findIndex = store.fileInfo.data.indexOf(firstCharASCII, findIndex);
-      if (findIndex === -1) {
-        break;
-      }
-
-      // Check if the whole search value matches
-      const everyValueMatches = store.fileInfo.data
-        .slice(findIndex, findIndex + searchText.length)
-        .every((value, index) => value === searchText.charCodeAt(index));
-      if (everyValueMatches) {
-        matches.push(new Selection(findIndex, findIndex + searchText.length - 1));
-        findIndex += searchText.length;
-      } else {
-        findIndex++;
-      }
-    } while (findIndex !== -1);
-
-    return matches;
-  };
+  const [ignoreCase, setIgnoreCase] = useState<boolean>(true);
+  const [selectedResultIndex, setSelectedResultIndex] = useState<number | null>(null);
+  const [searchResults, setSearchResults] = useState<Match[] | null>(null);
 
   const handleSearch = () => {
-    const matches = findAll();
+    let findOption = FindOption.Default;
+    if (searchType === "hex") {
+      findOption = FindOption.InterpretAsHex;
+    } else if (ignoreCase) {
+      findOption = FindOption.IgnoreCase;
+    }
+
+    const matches = store.fileInfo.find(searchText, findOption, maxResults);
     setSearchResults(matches);
-    if (matches) {
+    if (matches.length > 0) {
       setSelectedResultIndex(0);
     }
   };
 
   const toggleSearchType = () => {
     setSearchType(searchType === "text" ? "hex" : "text");
+  };
+
+  const toggleSearchCase = () => {
+    setIgnoreCase(!ignoreCase);
   };
 
   const previousResult = () => {
@@ -86,9 +76,11 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
     setSelectedResultIndex(selectedResultIndex! + 1);
   };
 
+  // Change the data selection when the selected result changes
   useEffect(() => {
-    if (selectedResultIndex !== undefined) {
-      store.selectionStore.setSelection(searchResults[selectedResultIndex]);
+    if (selectedResultIndex !== null) {
+      const selectedMatch = searchResults![selectedResultIndex];
+      store.selectionStore.setSelection(new Selection(selectedMatch.from, selectedMatch.to));
       store.selectionStore.scrollToSelection();
     }
   }, [selectedResultIndex]);
@@ -102,6 +94,12 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
       handleSearch();
     }
   };
+
+  const handleHideResults = () => {
+    setSearchResults(null);
+    setSelectedResultIndex(null);
+  };
+
   return (
     <Accordion elevation={4} defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -119,7 +117,6 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
         <Stack direction="column" alignItems="end" spacing={1}>
           <OutlinedInput
             type="text"
-            autoFocus
             fullWidth
             size="small"
             autoComplete="off"
@@ -128,16 +125,24 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
             onChange={(e) => setSearchText(e.target.value)}
             onKeyPress={handleSearchKeyPress}
             startAdornment={
-              <InputAdornment position="end">
-                <IconButton edge="start" color="primary" onClick={toggleSearchType}>
-                  {searchType === "text" ? <AbcIcon /> : <HexIcon />}
+              <InputAdornment position="start">
+                <IconButton size="small" edge="start" onClick={toggleSearchType}>
+                  {searchType === "text" ? <AbcIcon color="primary" /> : <HexIcon color="primary" />}
                 </IconButton>
               </InputAdornment>
             }
             endAdornment={
               searchType === "text" && (
                 <InputAdornment position="end">
-                  <Checkbox icon={<TextCaseIcon />} checkedIcon={<TextCaseIcon color="primary" />} />
+                  <Tooltip title="Match Case" arrow>
+                    <Checkbox
+                      checked={!ignoreCase}
+                      size="small"
+                      icon={<TextCaseIcon />}
+                      checkedIcon={<TextCaseIcon color="primary" />}
+                      onClick={toggleSearchCase}
+                    />
+                  </Tooltip>
                 </InputAdornment>
               )
             }
@@ -145,39 +150,47 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
           <Button size="small" variant="contained" disabled={searchText.length === 0} onClick={handleSearch}>
             Search
           </Button>
-          {searchResults.length > 0 && (
+          {searchResults !== null && (
             <Container disableGutters>
               <Divider>
-                <Chip
-                  label={`${searchResults.length} match${searchResults.length === 1 ? "" : "es"}`}
-                  onDelete={() => setSearchResults([])}
-                />
+                <Tooltip title={searchResults.length >= maxResults ? `First ${maxResults} matches only` : ""} arrow>
+                  <Chip
+                    variant="outlined"
+                    color={searchResults.length >= maxResults ? "warning" : "default"}
+                    label={`${searchResults.length} match${searchResults.length === 1 ? "" : "es"}`}
+                    onDelete={handleHideResults}
+                  />
+                </Tooltip>
               </Divider>
-              <Stack direction="row" justifyContent="space-between">
-                <IconButton
-                  onClick={previousResult}
-                  disabled={selectedResultIndex === undefined || selectedResultIndex <= 0}
-                >
-                  <ArrowCircleLeftOutlinedIcon />
-                </IconButton>
-                <IconButton
-                  onClick={nextResult}
-                  disabled={selectedResultIndex === undefined || selectedResultIndex >= searchResults.length - 1}
-                >
-                  <ArrowCircleRightOutlinedIcon />
-                </IconButton>
-              </Stack>
-              <List dense>
-                {searchResults.map((result, index) => (
-                  <ListItemButton
-                    key={`item-${result.fromOffset}`}
-                    selected={index === selectedResultIndex}
-                    onClick={() => setSelectedResultIndex(index)}
-                  >
-                    <ListItemText primary={`${result.fromOffset}: ${getText(result.fromOffset, 32)}…`} />
-                  </ListItemButton>
-                ))}
-              </List>
+              {searchResults.length > 0 && (
+                <React.Fragment>
+                  <Stack direction="row" justifyContent="space-between">
+                    <IconButton
+                      onClick={previousResult}
+                      disabled={selectedResultIndex === null || selectedResultIndex <= 0}
+                    >
+                      <ArrowCircleLeftOutlinedIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={nextResult}
+                      disabled={selectedResultIndex === null || selectedResultIndex >= searchResults.length - 1}
+                    >
+                      <ArrowCircleRightOutlinedIcon />
+                    </IconButton>
+                  </Stack>
+                  <List dense>
+                    {searchResults.map((result, index) => (
+                      <ListItemButton
+                        key={`item-${result.from}`}
+                        selected={index === selectedResultIndex}
+                        onClick={() => setSelectedResultIndex(index)}
+                      >
+                        <ListItemText primary={`${result.from}: ${getText(result.from, 32)}…`} />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </React.Fragment>
+              )}
             </Container>
           )}
         </Stack>
@@ -186,6 +199,9 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
   );
 };
 
+/**
+ * The icon used to represent a hex value search
+ */
 const HexIcon: React.FunctionComponent<SvgIconProps> = (props) => {
   return (
     <SvgIcon {...props}>
@@ -197,6 +213,9 @@ const HexIcon: React.FunctionComponent<SvgIconProps> = (props) => {
   );
 };
 
+/**
+ * The icon used to represent text case matching
+ */
 const TextCaseIcon: React.FunctionComponent<SvgIconProps> = (props) => {
   return (
     <SvgIcon {...props}>

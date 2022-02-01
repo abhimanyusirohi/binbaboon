@@ -4,7 +4,7 @@ import { RepeatedRecordDefinition } from "../formatreader/RepeatedRecordDefiniti
 import { FieldDefinition, OptionalFieldDefinition } from "../formatreader/FieldDefinition";
 import { Record } from "../formatreader/Record";
 
-import { FileInfo } from "./ApplicationStore";
+import { FileInfo } from "./FileInfo";
 
 export class FormatDefinitionStore {
   private fileExtension: string;

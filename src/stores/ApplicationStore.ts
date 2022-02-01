@@ -1,10 +1,7 @@
 import { SelectionStore } from "./SelectionStore";
 import { BookmarkStore } from "./BookmarkStore";
 import { FormatDefinitionStore } from "./FormatDefinitionStore";
-
-export class FileInfo {
-  constructor(public name: string, public size: number, public type: string, public data: Uint8Array) {}
-}
+import { FileInfo } from "./FileInfo";
 
 export class ApplicationStore {
   public selectionStore: SelectionStore;

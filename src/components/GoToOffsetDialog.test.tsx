@@ -3,8 +3,9 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 
 import { GoToOffsetDialog } from "./GoToOffsetDialog";
-import { FileInfo, ApplicationStore } from "../stores/ApplicationStore";
+import { ApplicationStore } from "../stores/ApplicationStore";
 import { Selection } from "../stores/Selection";
+import { FileInfo } from "../stores/FileInfo";
 
 describe("GoToOffsetDialog", () => {
   let store: ApplicationStore;

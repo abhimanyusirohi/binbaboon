@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 
 import { HexView } from "./HexView";
-//import { Selection } from "../stores/Selection";
-import { ApplicationStore, FileInfo } from "../stores/ApplicationStore";
+import { ApplicationStore } from "../stores/ApplicationStore";
+import { FileInfo } from "../stores/FileInfo";
 
 describe("HexView", () => {
   let fileInfo: FileInfo;

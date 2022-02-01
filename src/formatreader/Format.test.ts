@@ -3,7 +3,7 @@ import { RecordDefinition } from "./RecordDefinition";
 import { FieldDefinition } from "./FieldDefinition";
 import { ArrayBufferHelper } from "./ArrayBufferHelper";
 
-import { FileInfo } from "../stores/ApplicationStore";
+import { FileInfo } from "../stores/FileInfo";
 import { FormatDefinitionStore } from "../stores/FormatDefinitionStore";
 
 import fs from "fs";

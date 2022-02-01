@@ -13,7 +13,8 @@ import FileOpenIcon from "@mui/icons-material/FileOpen";
 
 import { blue } from "@mui/material/colors";
 
-import { ApplicationStore, FileInfo } from "./stores/ApplicationStore";
+import { ApplicationStore } from "./stores/ApplicationStore";
+import { FileInfo } from "./stores/FileInfo";
 import { App } from "./components/App";
 import { AlertDialog } from "./components/AlertDialog";
 

@@ -17,7 +17,7 @@ import { ApplicationStore } from "../stores/ApplicationStore";
 
 export interface AppProps {
   applicationStore: ApplicationStore;
-  onClose: () => void;
+  onClose: SimpleCallback;
 }
 
 export const App: React.FunctionComponent<AppProps> = observer(({ applicationStore, onClose }) => {

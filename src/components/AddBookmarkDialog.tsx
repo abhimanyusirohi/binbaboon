@@ -14,7 +14,7 @@ import { BookmarkStore } from "../stores/BookmarkStore";
 export interface AddBookmarkDialogProps {
   store: BookmarkStore;
   selection: Selection;
-  onClose: () => void;
+  onClose: SimpleCallback;
 }
 
 export const AddBookmarkDialog: React.FunctionComponent<AddBookmarkDialogProps> = ({ store, selection, onClose }) => {

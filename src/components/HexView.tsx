@@ -48,7 +48,7 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
   // Called once on startup to break the data into fixed size rows
   useEffect(() => {
     const rows = [];
-    const data = store.fileInfo.data;
+    const data = store.fileStore.data;
     for (let offset = 0; offset < data.length; ) {
       const rowData = data.slice(offset, offset + bytesPerRow);
       rows.push(rowData);
@@ -252,8 +252,8 @@ const ASCIIDataSequence: React.FunctionComponent<ASCIIDataSequenceProps> = obser
 
 interface HexViewHeaderRowProps {
   count: number;
-  onScrollTop: () => void;
-  onScrollBottom: () => void;
+  onScrollTop: SimpleCallback;
+  onScrollBottom: SimpleCallback;
 }
 
 /**

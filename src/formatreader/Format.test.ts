@@ -3,7 +3,7 @@ import { RecordDefinition } from "./RecordDefinition";
 import { FieldDefinition } from "./FieldDefinition";
 import { ArrayBufferHelper } from "./ArrayBufferHelper";
 
-import { FileInfo } from "../stores/FileInfo";
+import { FileStore } from "../stores/FileStore";
 import { FormatDefinitionStore } from "../stores/FormatDefinitionStore";
 
 import fs from "fs";
@@ -34,8 +34,8 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/sample.bmp");
     expect(data.length).toBe(3275658);
 
-    const fileInfo = new FileInfo("sample.bmp", 0, "bmp", data);
-    const store = new FormatDefinitionStore(fileInfo);
+    const fileStore = new FileStore("sample.bmp", 0, "bmp", data);
+    const store = new FormatDefinitionStore(fileStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
     expect(records.length).toBe(3);
@@ -64,8 +64,8 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/sample.png");
     expect(data.length).toBe(227963);
 
-    const fileInfo = new FileInfo("sample.png", 0, "png", data);
-    const store = new FormatDefinitionStore(fileInfo);
+    const fileStore = new FileStore("sample.png", 0, "png", data);
+    const store = new FormatDefinitionStore(fileStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
     expect(records.length).toBe(4);
@@ -80,8 +80,8 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/notepad.exe");
     expect(data.length).toBe(202240);
 
-    const fileInfo = new FileInfo("notepad.exe", 0, "exe", data);
-    const store = new FormatDefinitionStore(fileInfo);
+    const fileStore = new FileStore("notepad.exe", 0, "exe", data);
+    const store = new FormatDefinitionStore(fileStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
     expect(records.length).toBe(5);
@@ -97,8 +97,8 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/sample.xls");
     expect(data.length).toBe(19456);
 
-    const fileInfo = new FileInfo("sample.xls", 0, "cfb", data);
-    const store = new FormatDefinitionStore(fileInfo);
+    const fileStore = new FileStore("sample.xls", 0, "cfb", data);
+    const store = new FormatDefinitionStore(fileStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
     expect(records.length).toBe(1);

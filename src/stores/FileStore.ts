@@ -9,7 +9,7 @@ export enum FindOption {
   InterpretAsHex
 }
 
-export class FileInfo {
+export class FileStore {
   constructor(public name: string, public size: number, public type: string, public data: Uint8Array) {}
 
   /**

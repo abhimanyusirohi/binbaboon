@@ -5,7 +5,7 @@ import "@testing-library/jest-dom";
 import { GoToOffsetDialog } from "./GoToOffsetDialog";
 import { ApplicationStore } from "../stores/ApplicationStore";
 import { Selection } from "../stores/Selection";
-import { FileInfo } from "../stores/FileInfo";
+import { FileStore } from "../stores/FileStore";
 
 describe("GoToOffsetDialog", () => {
   let store: ApplicationStore;
@@ -13,8 +13,8 @@ describe("GoToOffsetDialog", () => {
 
   beforeEach(() => {
     const data = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-    const fileInfo = new FileInfo("test.file", 16, "text-file", data);
-    store = new ApplicationStore(fileInfo);
+    const fileStore = new FileStore("test.file", 16, "text-file", data);
+    store = new ApplicationStore(fileStore);
 
     store.selectionStore.setSelection(new Selection(1, 3));
     render(<GoToOffsetDialog store={store} onClose={closeHandler} />);

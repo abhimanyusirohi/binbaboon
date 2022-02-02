@@ -4,13 +4,13 @@ import { RepeatedRecordDefinition } from "../formatreader/RepeatedRecordDefiniti
 import { FieldDefinition, OptionalFieldDefinition } from "../formatreader/FieldDefinition";
 import { Record } from "../formatreader/Record";
 
-import { FileInfo } from "./FileInfo";
+import { FileStore } from "./FileStore";
 
 export class FormatDefinitionStore {
   private fileExtension: string;
 
-  constructor(private fileInfo: FileInfo) {
-    const [extension] = fileInfo.name.split(".").reverse();
+  constructor(private fileStore: FileStore) {
+    const [extension] = fileStore.name.split(".").reverse();
     this.fileExtension = extension.toLocaleLowerCase();
   }
 
@@ -20,7 +20,7 @@ export class FormatDefinitionStore {
 
   public readFile(): Record[] {
     const format = this.getFormatDefinition();
-    return format.read(this.fileInfo.data.buffer);
+    return format.read(this.fileStore.data.buffer);
   }
 
   private getFormatDefinition(): Format {

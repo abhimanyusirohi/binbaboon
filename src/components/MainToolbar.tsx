@@ -28,9 +28,9 @@ export const MainToolbar: React.FunctionComponent<MainToolbarProps> = observer((
         <ArticleIcon fontSize="large" />
         <Box display="block" sx={{ flexGrow: 1, ml: 2 }}>
           <Typography variant="h6" display="block">
-            {store.fileInfo.name}
+            {store.fileStore.name}
           </Typography>
-          <Typography variant="caption" display="block">{`${store.fileInfo.size} bytes`}</Typography>
+          <Typography variant="caption" display="block">{`${store.fileStore.size} bytes`}</Typography>
         </Box>
 
         <Tooltip title="Add bookmark" arrow>

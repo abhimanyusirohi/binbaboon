@@ -4,10 +4,10 @@ import "@testing-library/jest-dom";
 
 import { HexView } from "./HexView";
 import { ApplicationStore } from "../stores/ApplicationStore";
-import { FileInfo } from "../stores/FileInfo";
+import { FileStore } from "../stores/FileStore";
 
 describe("HexView", () => {
-  let fileInfo: FileInfo;
+  let fileStore: FileStore;
   let store: ApplicationStore;
 
   beforeAll(() => {
@@ -17,11 +17,11 @@ describe("HexView", () => {
 
     // Make test data with printable numbers and letters
     const data = new Uint8Array([...numbers, ...upperCaseA2Z, ...lowerCaseA2Z]);
-    fileInfo = new FileInfo("test.file", 16, "test-file", data);
+    fileStore = new FileStore("test.file", 16, "test-file", data);
   });
 
   beforeEach(() => {
-    store = new ApplicationStore(fileInfo);
+    store = new ApplicationStore(fileStore);
     render(<HexView store={store} bytesPerRow={16} />);
   });
 

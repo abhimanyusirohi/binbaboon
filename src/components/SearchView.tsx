@@ -30,9 +30,13 @@ import { blue } from "@mui/material/colors";
 
 import { ApplicationStore } from "../stores/ApplicationStore";
 import { Selection } from "../stores/Selection";
-import { FindOption, Match } from "../stores/FileInfo";
+import { FindOption, Match } from "../stores/FileStore";
 
 const maxResults = 250;
+
+interface MatchWithText extends Match {
+  text: string;
+}
 
 export interface SearchViewProps {
   store: ApplicationStore;
@@ -42,8 +46,7 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
   const [searchText, setSearchText] = useState<string>("");
   const [searchType, setSearchType] = useState<"text" | "hex">("text");
   const [ignoreCase, setIgnoreCase] = useState<boolean>(true);
-  const [selectedResultIndex, setSelectedResultIndex] = useState<number | null>(null);
-  const [searchResults, setSearchResults] = useState<Match[] | null>(null);
+  const [searchResults, setSearchResults] = useState<MatchWithText[] | null>(null);
 
   const handleSearch = () => {
     let findOption = FindOption.Default;
@@ -53,11 +56,13 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
       findOption = FindOption.IgnoreCase;
     }
 
-    const matches = store.fileInfo.find(searchText, findOption, maxResults);
+    // Convert matches from "find" to MatchWithText containing a text value that shows the matched data
+    const matches = store.fileStore.find(searchText, findOption, maxResults).map((match) => ({
+      from: match.from,
+      to: match.to,
+      text: String.fromCharCode(...store.fileStore.data.slice(match.from, match.from + 32))
+    }));
     setSearchResults(matches);
-    if (matches.length > 0) {
-      setSelectedResultIndex(0);
-    }
   };
 
   const toggleSearchType = () => {
@@ -68,36 +73,19 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
     setIgnoreCase(!ignoreCase);
   };
 
-  const previousResult = () => {
-    setSelectedResultIndex(selectedResultIndex! - 1);
-  };
-
-  const nextResult = () => {
-    setSelectedResultIndex(selectedResultIndex! + 1);
-  };
-
-  // Change the data selection when the selected result changes
-  useEffect(() => {
-    if (selectedResultIndex !== null) {
-      const selectedMatch = searchResults![selectedResultIndex];
-      store.selectionStore.setSelection(new Selection(selectedMatch.from, selectedMatch.to));
-      store.selectionStore.scrollToSelection();
-    }
-  }, [selectedResultIndex]);
-
-  const getText = (fromOffset: number, count: number): string => {
-    return String.fromCharCode(...store.fileInfo.data.slice(fromOffset, fromOffset + count));
-  };
-
   const handleSearchKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
 
-  const handleHideResults = () => {
+  const hideSearchResults = () => {
     setSearchResults(null);
-    setSelectedResultIndex(null);
+  };
+
+  const selectMatch = (match: Match) => {
+    store.selectionStore.setSelection(new Selection(match.from, match.to));
+    store.selectionStore.scrollToSelection();
   };
 
   return (
@@ -151,51 +139,74 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
             Search
           </Button>
           {searchResults !== null && (
-            <Container disableGutters>
-              <Divider>
-                <Tooltip title={searchResults.length >= maxResults ? `First ${maxResults} matches only` : ""} arrow>
-                  <Chip
-                    variant="outlined"
-                    color={searchResults.length >= maxResults ? "warning" : "default"}
-                    label={`${searchResults.length} match${searchResults.length === 1 ? "" : "es"}`}
-                    onDelete={handleHideResults}
-                  />
-                </Tooltip>
-              </Divider>
-              {searchResults.length > 0 && (
-                <React.Fragment>
-                  <Stack direction="row" justifyContent="space-between">
-                    <IconButton
-                      onClick={previousResult}
-                      disabled={selectedResultIndex === null || selectedResultIndex <= 0}
-                    >
-                      <ArrowCircleLeftOutlinedIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={nextResult}
-                      disabled={selectedResultIndex === null || selectedResultIndex >= searchResults.length - 1}
-                    >
-                      <ArrowCircleRightOutlinedIcon />
-                    </IconButton>
-                  </Stack>
-                  <List dense>
-                    {searchResults.map((result, index) => (
-                      <ListItemButton
-                        key={`item-${result.from}`}
-                        selected={index === selectedResultIndex}
-                        onClick={() => setSelectedResultIndex(index)}
-                      >
-                        <ListItemText primary={`${result.from}: ${getText(result.from, 32)}…`} />
-                      </ListItemButton>
-                    ))}
-                  </List>
-                </React.Fragment>
-              )}
-            </Container>
+            <SearchResultView matches={searchResults} onMatchSelect={selectMatch} onClose={hideSearchResults} />
           )}
         </Stack>
       </AccordionDetails>
     </Accordion>
+  );
+};
+
+interface SearchResultViewProps {
+  matches: MatchWithText[];
+  onMatchSelect: SingleParamCallback<Match>;
+  onClose: SimpleCallback;
+}
+
+/**
+ * Component that displays and allows browsing through the search results
+ */
+const SearchResultView: React.FunctionComponent<SearchResultViewProps> = ({ matches, onMatchSelect, onClose }) => {
+  const [selectedMatchIndex, setSelectedMatchIndex] = useState<number>(0);
+
+  const selectMatch = (index: number) => {
+    setSelectedMatchIndex(index);
+    onMatchSelect(matches[index]);
+  };
+
+  useEffect(() => {
+    setSelectedMatchIndex(0);
+  }, [matches]);
+
+  return (
+    <Container disableGutters>
+      <Divider>
+        <Tooltip title={matches.length >= maxResults ? `First ${maxResults} matches only` : ""} arrow>
+          <Chip
+            variant="outlined"
+            color={matches.length >= maxResults ? "warning" : "default"}
+            label={`${matches.length} match${matches.length === 1 ? "" : "es"}`}
+            onDelete={onClose}
+          />
+        </Tooltip>
+      </Divider>
+      {matches.length > 0 && (
+        <React.Fragment>
+          <Stack direction="row" justifyContent="space-between">
+            <IconButton onClick={() => selectMatch(selectedMatchIndex - 1)} disabled={selectedMatchIndex <= 0}>
+              <ArrowCircleLeftOutlinedIcon />
+            </IconButton>
+            <IconButton
+              onClick={() => selectMatch(selectedMatchIndex + 1)}
+              disabled={selectedMatchIndex >= matches.length - 1}
+            >
+              <ArrowCircleRightOutlinedIcon />
+            </IconButton>
+          </Stack>
+          <List dense>
+            {matches.map((match, index) => (
+              <ListItemButton
+                key={`item-${match.from}`}
+                selected={index === selectedMatchIndex}
+                onClick={() => selectMatch(index)}
+              >
+                <ListItemText primary={`${match.from}: ${match.text}`} />
+              </ListItemButton>
+            ))}
+          </List>
+        </React.Fragment>
+      )}
+    </Container>
   );
 };
 

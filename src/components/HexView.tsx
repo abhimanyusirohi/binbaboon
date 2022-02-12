@@ -12,8 +12,8 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 
 import BookmarkIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import ArrowUpIcon from "@mui/icons-material/ArrowCircleUpOutlined";
-import ArrowDownIcon from "@mui/icons-material/ArrowCircleDownOutlined";
+import ScrollToTopIcon from "@mui/icons-material/FirstPageOutlined";
+import ScrollToBottomIcon from "@mui/icons-material/LastPageOutlined";
 
 import { observer } from "mobx-react-lite";
 
@@ -279,12 +279,12 @@ const HexViewHeaderRow: React.FunctionComponent<HexViewHeaderRowProps> = ({ coun
         <Stack direction="row" justifyContent="flex-end">
           <Tooltip title="Scroll to top" arrow>
             <IconButton size="small" color="inherit" onClick={onScrollTop}>
-              <ArrowUpIcon fontSize="inherit" />
+              <ScrollToTopIcon fontSize="inherit" className="Rotated90Clockwise" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Scroll to bottom" arrow>
             <IconButton size="small" color="inherit" onClick={onScrollBottom}>
-              <ArrowDownIcon fontSize="inherit" />
+              <ScrollToBottomIcon fontSize="inherit" className="Rotated90Clockwise" />
             </IconButton>
           </Tooltip>
         </Stack>

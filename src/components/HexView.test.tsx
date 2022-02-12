@@ -17,7 +17,7 @@ describe("HexView", () => {
 
     // Make test data with printable numbers and letters
     const data = new Uint8Array([...numbers, ...upperCaseA2Z, ...lowerCaseA2Z]);
-    fileStore = new FileStore("test.file", 16, "test-file", data);
+    fileStore = new FileStore("test.file", "test-file", data);
   });
 
   beforeEach(() => {
@@ -72,4 +72,7 @@ describe("HexView", () => {
 
     expect(store.selectionStore.currentSelection).toMatchObject({ from: 0, to: 7 });
   });
+
+  test.todo("must scroll to top");
+  test.todo("must scroll to bottom");
 });

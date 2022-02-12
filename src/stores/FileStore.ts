@@ -10,12 +10,20 @@ export enum FindOption {
 }
 
 export class FileStore {
-  constructor(public name: string, public size: number, public type: string, public data: Uint8Array) {}
+  constructor(public name: string, public type: string, public data: Uint8Array) {}
+
+  public get size(): number {
+    return this.data.length;
+  }
 
   /**
    * Finds the specified text in data and returns one or more matches
    */
-  public find(text: string, option: FindOption = FindOption.Default, maxHits = Number.MAX_SAFE_INTEGER): Match[] {
+  public find(
+    text: string,
+    option: FindOption = FindOption.Default,
+    maximumMatches = Number.MAX_SAFE_INTEGER
+  ): Match[] {
     let searchText = text;
     const matches: Match[] = [];
     const lowercaseText = searchText.toLowerCase();
@@ -25,11 +33,11 @@ export class FileStore {
       comparePredicate = (value: number, index: number) =>
         value === lowercaseText.charCodeAt(index) || value === uppercaseText.charCodeAt(index);
     } else if (option === FindOption.InterpretAsHex) {
-      searchText = convertToHexString(text);
+      searchText = hexStringToASCII(text);
     }
 
     let findIndex = 0;
-    while (findIndex + searchText.length < this.data.length && matches.length < maxHits) {
+    while (findIndex + searchText.length <= this.data.length && matches.length < maximumMatches) {
       const everyValueMatches = this.data.slice(findIndex, findIndex + searchText.length).every(comparePredicate);
 
       if (everyValueMatches) {
@@ -44,7 +52,14 @@ export class FileStore {
   }
 }
 
-function convertToHexString(text: string): string {
+/**
+ * Converts the specified hex string to ASCII string
+ * E.g. [0x61, 0x62] => "6162" => "ab", [0x41, 0x42] => "4142" => "AB"
+ *
+ * @param text Hex string in the form "6162" which means [0x61, 0x62]
+ * @returns ASCII string
+ */
+function hexStringToASCII(text: string): string {
   // Remove spaces from between
   let hexString = text.replace(/\s/g, "");
 

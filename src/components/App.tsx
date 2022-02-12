@@ -67,7 +67,7 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
         </Grid>
         <Grid item lg={3}>
           <SelectionView store={applicationStore.selectionStore} />
-          <SearchView store={applicationStore} />
+          <SearchView fileStore={applicationStore.fileStore} selectionStore={applicationStore.selectionStore} />
         </Grid>
       </Grid>
       {addBookmarkDialogShown && (

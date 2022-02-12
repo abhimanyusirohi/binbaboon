@@ -23,32 +23,36 @@ import Tooltip from "@mui/material/Tooltip";
 import SearchIcon from "@mui/icons-material/SearchOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AbcIcon from "@mui/icons-material/AbcOutlined";
-import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
-import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
+import ArrowCircleUpOutlinedIcon from "@mui/icons-material/ArrowCircleUpOutlined";
+import ArrowCircleDownOutlinedIcon from "@mui/icons-material/ArrowCircleDownOutlined";
 
 import { blue } from "@mui/material/colors";
 
-import { ApplicationStore } from "../stores/ApplicationStore";
 import { Selection } from "../stores/Selection";
-import { FindOption, Match } from "../stores/FileStore";
-
-const maxResults = 250;
+import { FileStore, FindOption, Match } from "../stores/FileStore";
+import { SelectionStore } from "../stores/SelectionStore";
 
 interface MatchWithText extends Match {
   text: string;
 }
 
 export interface SearchViewProps {
-  store: ApplicationStore;
+  fileStore: FileStore;
+  selectionStore: SelectionStore;
+  maximumMatches?: number;
 }
 
-export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) => {
+export const SearchView: React.FunctionComponent<SearchViewProps> = ({
+  fileStore,
+  selectionStore,
+  maximumMatches = 250
+}) => {
   const [searchText, setSearchText] = useState<string>("");
   const [searchType, setSearchType] = useState<"text" | "hex">("text");
   const [ignoreCase, setIgnoreCase] = useState<boolean>(true);
   const [searchResults, setSearchResults] = useState<MatchWithText[] | null>(null);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     let findOption = FindOption.Default;
     if (searchType === "hex") {
       findOption = FindOption.InterpretAsHex;
@@ -56,13 +60,15 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
       findOption = FindOption.IgnoreCase;
     }
 
+    const matches = fileStore.find(searchText, findOption, maximumMatches);
+
     // Convert matches from "find" to MatchWithText containing a text value that shows the matched data
-    const matches = store.fileStore.find(searchText, findOption, maxResults).map((match) => ({
+    const matchesWithText = matches.map((match) => ({
       from: match.from,
       to: match.to,
-      text: String.fromCharCode(...store.fileStore.data.slice(match.from, match.from + 32))
+      text: String.fromCharCode(...fileStore.data.slice(match.from, match.from + 32))
     }));
-    setSearchResults(matches);
+    setSearchResults(matchesWithText);
   };
 
   const toggleSearchType = () => {
@@ -84,8 +90,8 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
   };
 
   const selectMatch = (match: Match) => {
-    store.selectionStore.setSelection(new Selection(match.from, match.to));
-    store.selectionStore.scrollToSelection();
+    selectionStore.setSelection(new Selection(match.from, match.to));
+    selectionStore.scrollToSelection();
   };
 
   return (
@@ -112,35 +118,21 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
             placeholder={searchType === "text" ? "Search text e.g. PDF" : "Search hex values e.g. FFF0"}
             onChange={(e) => setSearchText(e.target.value)}
             onKeyPress={handleSearchKeyPress}
-            startAdornment={
-              <InputAdornment position="start">
-                <IconButton size="small" edge="start" onClick={toggleSearchType}>
-                  {searchType === "text" ? <AbcIcon color="primary" /> : <HexIcon color="primary" />}
-                </IconButton>
-              </InputAdornment>
-            }
+            startAdornment={<SearchTypeToggleButton checked={searchType === "hex"} onToggle={toggleSearchType} />}
             endAdornment={
-              searchType === "text" && (
-                <InputAdornment position="end">
-                  <Tooltip title="Match Case" arrow>
-                    <Checkbox
-                      checked={!ignoreCase}
-                      size="small"
-                      icon={<TextCaseIcon />}
-                      checkedIcon={<TextCaseIcon color="primary" />}
-                      onClick={toggleSearchCase}
-                    />
-                  </Tooltip>
-                </InputAdornment>
-              )
+              searchType === "text" && <SearchTextToggleCaseButton checked={!ignoreCase} onToggle={toggleSearchCase} />
             }
+            inputProps={{ "aria-label": "Search" }}
           />
           <Button size="small" variant="contained" disabled={searchText.length === 0} onClick={handleSearch}>
             Search
           </Button>
-          {searchResults !== null && (
-            <SearchResultView matches={searchResults} onMatchSelect={selectMatch} onClose={hideSearchResults} />
-          )}
+          <SearchResultView
+            matches={searchResults}
+            maximumMatches={maximumMatches}
+            onMatchSelect={selectMatch}
+            onClose={hideSearchResults}
+          />
         </Stack>
       </AccordionDetails>
     </Accordion>
@@ -148,7 +140,8 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({ store }) 
 };
 
 interface SearchResultViewProps {
-  matches: MatchWithText[];
+  matches: MatchWithText[] | null;
+  maximumMatches: number;
   onMatchSelect: SingleParamCallback<Match>;
   onClose: SimpleCallback;
 }
@@ -156,25 +149,32 @@ interface SearchResultViewProps {
 /**
  * Component that displays and allows browsing through the search results
  */
-const SearchResultView: React.FunctionComponent<SearchResultViewProps> = ({ matches, onMatchSelect, onClose }) => {
+const SearchResultView: React.FunctionComponent<SearchResultViewProps> = ({
+  matches,
+  maximumMatches,
+  onMatchSelect,
+  onClose
+}) => {
   const [selectedMatchIndex, setSelectedMatchIndex] = useState<number>(0);
 
   const selectMatch = (index: number) => {
     setSelectedMatchIndex(index);
-    onMatchSelect(matches[index]);
+    onMatchSelect(matches![index]);
   };
 
   useEffect(() => {
-    setSelectedMatchIndex(0);
+    if (matches && matches?.length > 0) {
+      selectMatch(0);
+    }
   }, [matches]);
 
-  return (
-    <Container disableGutters>
+  return matches !== null ? (
+    <Container disableGutters data-testid="search-results">
       <Divider>
-        <Tooltip title={matches.length >= maxResults ? `First ${maxResults} matches only` : ""} arrow>
+        <Tooltip title={matches.length >= maximumMatches ? `First ${maximumMatches} matches only` : ""} arrow>
           <Chip
             variant="outlined"
-            color={matches.length >= maxResults ? "warning" : "default"}
+            color={matches.length >= maximumMatches ? "warning" : "default"}
             label={`${matches.length} match${matches.length === 1 ? "" : "es"}`}
             onDelete={onClose}
           />
@@ -183,18 +183,23 @@ const SearchResultView: React.FunctionComponent<SearchResultViewProps> = ({ matc
       {matches.length > 0 && (
         <React.Fragment>
           <Stack direction="row" justifyContent="space-between">
-            <IconButton onClick={() => selectMatch(selectedMatchIndex - 1)} disabled={selectedMatchIndex <= 0}>
-              <ArrowCircleLeftOutlinedIcon />
+            <IconButton
+              aria-label="Previous Match"
+              onClick={() => selectMatch(selectedMatchIndex - 1)}
+              disabled={selectedMatchIndex <= 0}
+            >
+              <ArrowCircleUpOutlinedIcon />
             </IconButton>
             <IconButton
+              aria-label="Next Match"
               onClick={() => selectMatch(selectedMatchIndex + 1)}
               disabled={selectedMatchIndex >= matches.length - 1}
             >
-              <ArrowCircleRightOutlinedIcon />
+              <ArrowCircleDownOutlinedIcon />
             </IconButton>
           </Stack>
           <List dense>
-            {matches.map((match, index) => (
+            {matches.slice(0, maximumMatches).map((match, index) => (
               <ListItemButton
                 key={`item-${match.from}`}
                 selected={index === selectedMatchIndex}
@@ -207,6 +212,53 @@ const SearchResultView: React.FunctionComponent<SearchResultViewProps> = ({ matc
         </React.Fragment>
       )}
     </Container>
+  ) : (
+    <React.Fragment />
+  );
+};
+
+interface ToggleButtonProps {
+  checked: boolean;
+  onToggle: SimpleCallback;
+}
+
+/**
+ * The toggle button inside the search textbox that toggles the search type (Text, Hex)
+ */
+const SearchTypeToggleButton: React.FunctionComponent<ToggleButtonProps> = ({ checked, onToggle }) => {
+  return (
+    <InputAdornment position="start">
+      <Tooltip title="Toggle search type" arrow>
+        <Checkbox
+          checked={checked}
+          size="small"
+          icon={<AbcIcon color="primary" />}
+          checkedIcon={<HexIcon color="primary" />}
+          onClick={onToggle}
+          inputProps={{ "aria-label": "Toggle Search Type" }}
+        />
+      </Tooltip>
+    </InputAdornment>
+  );
+};
+
+/**
+ * The toggle button inside the search textbox that toggles the case-matching for text search
+ */
+const SearchTextToggleCaseButton: React.FunctionComponent<ToggleButtonProps> = ({ checked, onToggle }) => {
+  return (
+    <InputAdornment position="end">
+      <Tooltip title="Toggle match case" arrow>
+        <Checkbox
+          checked={checked}
+          size="small"
+          icon={<TextCaseIcon />}
+          checkedIcon={<TextCaseIcon color="primary" />}
+          onClick={onToggle}
+          inputProps={{ "aria-label": "Toggle Match Case" }}
+        />
+      </Tooltip>
+    </InputAdornment>
   );
 };
 

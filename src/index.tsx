@@ -50,7 +50,7 @@ const Home: React.FunctionComponent = () => {
         return;
       }
 
-      const fileStore = new FileStore(file.name, file.size, file.type, new Uint8Array(fileData));
+      const fileStore = new FileStore(file.name, file.type, new Uint8Array(fileData));
 
       const appStore = new ApplicationStore(fileStore);
       setStore(appStore);

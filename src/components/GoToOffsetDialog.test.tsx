@@ -13,7 +13,7 @@ describe("GoToOffsetDialog", () => {
 
   beforeEach(() => {
     const data = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-    const fileStore = new FileStore("test.file", 16, "text-file", data);
+    const fileStore = new FileStore("test.file", "text-file", data);
     store = new ApplicationStore(fileStore);
 
     store.selectionStore.setSelection(new Selection(1, 3));

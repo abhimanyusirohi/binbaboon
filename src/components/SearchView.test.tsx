@@ -1,6 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom";
 
 import { SearchView } from "./SearchView";
 import { ApplicationStore } from "../stores/ApplicationStore";

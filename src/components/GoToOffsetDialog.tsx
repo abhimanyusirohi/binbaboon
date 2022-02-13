@@ -8,8 +8,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { ApplicationStore } from "../stores/ApplicationStore";
-import { Selection } from "../stores/Selection";
+import { ApplicationStore } from "../ApplicationStore";
+import { Selection } from "../Selection";
 
 export interface GoToOffsetDialogProps {
   store: ApplicationStore;

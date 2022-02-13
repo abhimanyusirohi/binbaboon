@@ -23,8 +23,8 @@ import SelectAllIcon from "@mui/icons-material/SelectAll";
 import ForwardIcon from "@mui/icons-material/ForwardOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import { Selection } from "../stores/Selection";
-import { SelectionStore } from "../stores/SelectionStore";
+import { Selection } from "../Selection";
+import { SelectionStore } from "../SelectionStore";
 
 export interface SelectionViewProps {
   store: SelectionStore;

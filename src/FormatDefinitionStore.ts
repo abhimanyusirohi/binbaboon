@@ -1,8 +1,8 @@
-import { Format, ByteOrder } from "../formatreader/Format";
-import { RecordDefinition } from "../formatreader/RecordDefinition";
-import { RepeatedRecordDefinition } from "../formatreader/RepeatedRecordDefinition";
-import { FieldDefinition, OptionalFieldDefinition } from "../formatreader/FieldDefinition";
-import { Record } from "../formatreader/Record";
+import { Format, ByteOrder } from "./formatreader/Format";
+import { RecordDefinition } from "./formatreader/RecordDefinition";
+import { RepeatedRecordDefinition } from "./formatreader/RepeatedRecordDefinition";
+import { FieldDefinition, OptionalFieldDefinition } from "./formatreader/FieldDefinition";
+import { Record } from "./formatreader/Record";
 
 import { FileStore } from "./FileStore";
 

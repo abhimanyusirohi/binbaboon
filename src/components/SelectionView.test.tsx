@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { SelectionView } from "./SelectionView";
-import { SelectionStore } from "../stores/SelectionStore";
-import { Selection } from "../stores/Selection";
+import { SelectionStore } from "../SelectionStore";
+import { Selection } from "../Selection";
 
 // Mock the clipboard's writeText method
 Object.assign(navigator, {

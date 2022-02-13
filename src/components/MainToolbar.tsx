@@ -14,7 +14,7 @@ import CloseIcon from "@mui/icons-material/CloseOutlined";
 import ForwardIcon from "@mui/icons-material/ForwardOutlined";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAddOutlined";
 
-import { ApplicationStore } from "../stores/ApplicationStore";
+import { ApplicationStore } from "../ApplicationStore";
 
 export interface MainToolbarProps {
   store: ApplicationStore;

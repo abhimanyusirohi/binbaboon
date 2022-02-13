@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { HexView } from "./HexView";
-import { ApplicationStore } from "../stores/ApplicationStore";
-import { FileStore } from "../stores/FileStore";
+import { ApplicationStore } from "../ApplicationStore";
+import { FileStore } from "../FileStore";
 
 describe("HexView", () => {
   let fileStore: FileStore;

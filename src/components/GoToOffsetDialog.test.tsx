@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { GoToOffsetDialog } from "./GoToOffsetDialog";
-import { ApplicationStore } from "../stores/ApplicationStore";
-import { Selection } from "../stores/Selection";
-import { FileStore } from "../stores/FileStore";
+import { ApplicationStore } from "../ApplicationStore";
+import { Selection } from "../Selection";
+import { FileStore } from "../FileStore";
 
 describe("GoToOffsetDialog", () => {
   let store: ApplicationStore;

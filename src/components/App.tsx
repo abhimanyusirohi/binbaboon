@@ -13,7 +13,7 @@ import { AlertDialog } from "./AlertDialog";
 import { MainToolbar } from "./MainToolbar";
 import { SearchView } from "./SearchView";
 
-import { ApplicationStore } from "../stores/ApplicationStore";
+import { ApplicationStore } from "../ApplicationStore";
 
 export interface AppProps {
   applicationStore: ApplicationStore;

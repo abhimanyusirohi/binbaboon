@@ -28,9 +28,9 @@ import ArrowCircleDownOutlinedIcon from "@mui/icons-material/ArrowCircleDownOutl
 
 import { blue } from "@mui/material/colors";
 
-import { Selection } from "../stores/Selection";
-import { FileStore, FindOption, Match } from "../stores/FileStore";
-import { SelectionStore } from "../stores/SelectionStore";
+import { Selection } from "../Selection";
+import { FileStore, FindOption, Match } from "../FileStore";
+import { SelectionStore } from "../SelectionStore";
 
 interface MatchWithText extends Match {
   text: string;

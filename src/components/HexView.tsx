@@ -2,8 +2,8 @@ import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { FixedSizeList } from "react-window";
 import classNames from "classnames";
 
-import { ApplicationStore } from "../stores/ApplicationStore";
-import { Selection } from "../stores/Selection";
+import { ApplicationStore } from "../ApplicationStore";
+import { Selection } from "../Selection";
 
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -18,7 +18,7 @@ import ScrollToBottomIcon from "@mui/icons-material/LastPageOutlined";
 import { observer } from "mobx-react-lite";
 
 import "./HexView.css";
-import { SelectionStore } from "../stores/SelectionStore";
+import { SelectionStore } from "../SelectionStore";
 
 type ByteMouseEvent = (event: React.MouseEvent, offset: number) => void;
 

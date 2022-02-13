@@ -2,8 +2,8 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { SearchView } from "./SearchView";
-import { ApplicationStore } from "../stores/ApplicationStore";
-import { FileStore } from "../stores/FileStore";
+import { ApplicationStore } from "../ApplicationStore";
+import { FileStore } from "../FileStore";
 
 const maximumMatches = 10;
 

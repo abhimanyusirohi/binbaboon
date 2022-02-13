@@ -22,9 +22,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpIcon from "@mui/icons-material/HelpOutline";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 
-import { Bookmark } from "../stores/BookmarkCollection";
-import { BookmarkStore } from "../stores/BookmarkStore";
-import { SelectionStore } from "../stores/SelectionStore";
+import { Bookmark } from "../BookmarkCollection";
+import { BookmarkStore } from "../BookmarkStore";
+import { SelectionStore } from "../SelectionStore";
 
 /**
  * TODOs

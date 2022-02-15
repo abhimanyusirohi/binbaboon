@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
 import Avatar from "@mui/material/Avatar";
@@ -22,16 +22,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpIcon from "@mui/icons-material/HelpOutline";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 
-import { Bookmark } from "../BookmarkCollection";
+import { Bookmark } from "../Bookmark";
 import { BookmarkStore } from "../BookmarkStore";
 import { SelectionStore } from "../SelectionStore";
 
 /**
  * TODOs
  * Top: Search, Expand All, Collapse All
- * Select a bookmark should select in hexview.
- *    BookmarkView sets selectedBookmark which sets the selection which shows in HexView
- * Delete bookmark - delete icon on same row
  */
 
 export interface BookmarkViewProps {
@@ -42,32 +39,16 @@ export interface BookmarkViewProps {
 export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer(
   ({ bookmarkStore, selectionStore }) => {
     const [expanded, setExpanded] = useState<string[]>([]);
-    const [selected, setSelected] = useState<string>("");
-
-    useEffect(() => {
-      // Select and make the selected bookmark visible by expanding its parent
-      if (bookmarkStore.selectedBookmark) {
-        let selectedNode = "";
-        const expandedNodes = expanded;
-        selectedNode = bookmarkStore.selectedBookmark.name;
-        if (bookmarkStore.selectedBookmark.parent) {
-          expandedNodes.push(bookmarkStore.selectedBookmark.parent.name);
-        }
-
-        // Batch updates to avoid multiple renders
-        setSelected(selectedNode);
-        setExpanded(expandedNodes);
-      }
-    }, [bookmarkStore.selectedBookmark]);
 
     const handleToggle = (event: React.SyntheticEvent, nodeIds: string[]) => {
       setExpanded(nodeIds);
     };
 
     const handleSelect = (event: React.SyntheticEvent, nodeIds: string[] | string) => {
-      setSelected(nodeIds as string);
+      bookmarkStore.selectBookmark(nodeIds as string);
 
-      const bookmark = bookmarkStore.bookmarkCollection.find(nodeIds as string);
+      // Select the corresponding bytes when a bookmark is selected
+      const bookmark = bookmarkStore.find(nodeIds as string);
       if (bookmark) {
         selectionStore.setSelection(bookmark.selection);
         selectionStore.scrollToSelection();
@@ -90,18 +71,27 @@ export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer
     const renderTree = (bookmarks: Bookmark[]) =>
       bookmarks.map((bookmark) => (
         <StyledTreeItem
-          key={bookmark.name}
-          nodeId={bookmark.name}
-          label={
-            <CustomTreeItem
-              bookmark={bookmark}
-              onDelete={() => bookmarkStore.bookmarkCollection.delete(bookmark.name)}
-            />
-          }
+          key={bookmark.id}
+          nodeId={bookmark.id}
+          label={<CustomTreeItem bookmark={bookmark} onDelete={() => bookmarkStore.delete(bookmark.id)} />}
         >
-          {renderTree(bookmark.children.bookmarks)}
+          {renderTree(bookmark.children)}
         </StyledTreeItem>
       ));
+
+    const getExpandedNodes = (): string[] => {
+      const expandedIds = new Set(expanded);
+
+      // Expanded nodes are existing expanded nodes and all the parent
+      // nodes of the selected bookmark to make it always visible
+      let parentId = bookmarkStore.selectedBookmark?.parent;
+      while (parentId && parentId !== null) {
+        expandedIds.add(parentId);
+        parentId = bookmarkStore.find(parentId)!.parent;
+      }
+
+      return [...expandedIds];
+    };
 
     return (
       <Card elevation={4}>
@@ -115,17 +105,17 @@ export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer
           subheader="Make bytes meaningful by adding bookmarks"
         />
         <CardContent sx={{ overflow: "auto" }}>
-          {bookmarkStore.bookmarkCount > 0 && (
+          {bookmarkStore.count > 0 && (
             <TreeView
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
-              expanded={expanded}
-              selected={selected}
-              onNodeToggle={handleToggle}
+              expanded={getExpandedNodes()}
+              selected={bookmarkStore.selectedBookmark?.id}
               onNodeSelect={handleSelect}
+              onNodeToggle={handleToggle}
               sx={{ height: 500 }}
             >
-              {renderTree(bookmarkStore.bookmarkCollection.bookmarks)}
+              {renderTree(bookmarkStore.bookmarkTree)}
             </TreeView>
           )}
         </CardContent>
@@ -153,18 +143,16 @@ const CustomTreeItem: React.FunctionComponent<CustomTreeItemProps> = ({ bookmark
 
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box component={bookmark.children.hasBookmarks ? BookmarksIcon : BookmarkIcon} color="inherit" />
-      <Typography variant="body2" sx={{ fontWeight: "inherit", flexGrow: 1 }}>
+      {bookmark.children.length > 0 ? <BookmarksIcon fontSize="small" /> : <BookmarkIcon fontSize="small" />}
+      <Typography variant="body2" sx={{ fontWeight: "inherit", flexGrow: 1, ml: 1, mr: 1 }} noWrap>
         {bookmark.name}
       </Typography>
       <Tooltip title={helpText} arrow>
         <HelpIcon fontSize="inherit" />
       </Tooltip>
-      <Tooltip title="Delete" arrow>
-        <IconButton size="small" color="inherit" onClick={handleDeleteClick}>
-          <DeleteIcon fontSize="inherit" />
-        </IconButton>
-      </Tooltip>
+      <IconButton size="small" color="inherit" onClick={handleDeleteClick}>
+        <DeleteIcon fontSize="inherit" color="error" />
+      </IconButton>
     </Box>
   );
 };

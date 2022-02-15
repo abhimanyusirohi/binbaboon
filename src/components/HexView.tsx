@@ -150,8 +150,7 @@ const FixedSizeListRow: React.FunctionComponent<FixedSizeListRowProps> = observe
     const rowOffset = data.bytesPerRow * rowIndex;
 
     const rowHasBookmarks =
-      data.store.bookmarkStore.bookmarkCollection.findByOffsetRange(rowOffset, rowOffset + data.bytesPerRow - 1)
-        .length > 0;
+      data.store.bookmarkStore.findByOffsetRange(rowOffset, rowOffset + data.bytesPerRow - 1).length > 0;
 
     return (
       <Grid container style={style} columns={16} flexWrap="nowrap" alignItems="center">

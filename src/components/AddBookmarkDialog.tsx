@@ -8,6 +8,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+import { Bookmark } from "../Bookmark";
 import { Selection } from "../Selection";
 import { BookmarkStore } from "../BookmarkStore";
 
@@ -29,8 +30,9 @@ export const AddBookmarkDialog: React.FunctionComponent<AddBookmarkDialogProps> 
 
   const addBookmark = () => {
     try {
-      store.bookmarkCollection.add(bookmarkName, bookmarkDescription, selection);
-      store.selectBookmark(bookmarkName);
+      const bookmark = new Bookmark(bookmarkName, bookmarkDescription, selection);
+      store.add(bookmark);
+      store.selectBookmark(bookmark.id);
 
       onClose();
     } catch (err) {

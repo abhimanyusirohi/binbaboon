@@ -52,34 +52,6 @@ describe("BookmarkStore", () => {
     );
   });
 
-  test("must create tree", () => {
-    store.add(new Bookmark("A", "", new Selection(20, 50)));
-    store.add(new Bookmark("B", "", new Selection(30, 40)));
-    store.add(new Bookmark("C", "", new Selection(40, 50)));
-    store.add(new Bookmark("D", "", new Selection(32, 38)));
-
-    const tree = store.bookmarkTree;
-
-    expect(tree).toMatchObject([
-      {
-        name: "A",
-        children: [
-          {
-            name: "B",
-            children: [
-              {
-                name: "D"
-              }
-            ]
-          },
-          {
-            name: "C"
-          }
-        ]
-      }
-    ]);
-  });
-
   describe("find", () => {
     test("must find bookmark by id", () => {
       expect(store.find("unknown")).toBeNull();
@@ -129,62 +101,108 @@ describe("BookmarkStore", () => {
     });
   });
 
-  describe("hierarchy", () => {
-    test("must return the correct order with independent bookmarks", () => {
-      store.add(new Bookmark("Length", "Field length", new Selection(10, 20)));
-      store.add(new Bookmark("NumBytes", "Number of bytes", new Selection(30, 40)));
-      store.add(new Bookmark("NumColors", "Number of colors", new Selection(0, 9)));
+  describe("hierarchy tree", () => {
+    test("must return the right order based on selection for independent non-overlapping bookmarks", () => {
+      store.add(new Bookmark("C", "", new Selection(50, 60)));
+      store.add(new Bookmark("A", "", new Selection(10, 20)));
+      store.add(new Bookmark("D", "", new Selection(70, 80)));
+      store.add(new Bookmark("B", "", new Selection(30, 40)));
 
-      expect(store.count).toBe(3);
-
-      // Bookmarks should be ordered according to the selection
-      expect(store.bookmarkTree).toMatchObject([
+      const tree = store.bookmarkTree;
+      expect(tree).toMatchObject([
         {
-          name: "NumColors",
-          description: "Number of colors",
-          selection: { fromOffset: 0, toOffset: 9 }
+          name: "A"
         },
         {
-          name: "Length",
-          description: "Field length",
-          selection: { fromOffset: 10, toOffset: 20 }
+          name: "B"
         },
         {
-          name: "NumBytes",
-          description: "Number of bytes",
-          selection: { fromOffset: 30, toOffset: 40 }
+          name: "C"
+        },
+        {
+          name: "D"
         }
       ]);
     });
 
-    test("must return the correct hierarchy with one parent having three non overlapping children", () => {
-      store.add(new Bookmark("parent", "Parent", new Selection(0, 111)));
-      store.add(new Bookmark("child1", "First child", new Selection(16, 47)));
-      store.add(new Bookmark("child2", "Second child", new Selection(48, 79)));
-      store.add(new Bookmark("child3", "Third child", new Selection(80, 95)));
+    test("must return a tree for simple hierarchy of non-overlapping bookmarks", () => {
+      store.add(new Bookmark("A", "", new Selection(20, 100)));
+      store.add(new Bookmark("B", "", new Selection(30, 40)));
+      store.add(new Bookmark("C", "", new Selection(32, 38)));
+      store.add(new Bookmark("D", "", new Selection(70, 80)));
 
-      expect(store.count).toBe(4);
+      store.add(new Bookmark("X", "", new Selection(200, 400)));
+      store.add(new Bookmark("Y", "", new Selection(250, 260)));
+      store.add(new Bookmark("Z", "", new Selection(270, 280)));
+
+      expect(store.bookmarkTree).toMatchObject([
+        {
+          name: "A",
+          children: [
+            {
+              name: "B",
+              children: [
+                {
+                  name: "C"
+                }
+              ]
+            },
+            {
+              name: "D"
+            }
+          ]
+        },
+        {
+          name: "X",
+          children: [
+            {
+              name: "Y"
+            },
+            {
+              name: "Z"
+            }
+          ]
+        }
+      ]);
+    });
+
+    test("must return the right order based on selection for overlapping bookmarks", () => {
+      store.add(new Bookmark("A", "", new Selection(25, 75)));
+      store.add(new Bookmark("B", "", new Selection(0, 49)));
+      store.add(new Bookmark("C", "", new Selection(50, 100)));
+
       const tree = store.bookmarkTree;
       expect(tree).toMatchObject([
         {
-          name: "parent",
-          description: "Parent",
-          selection: { fromOffset: 0, toOffset: 111 },
+          name: "B"
+        },
+        {
+          name: "A"
+        },
+        {
+          name: "C"
+        }
+      ]);
+    });
+
+    test("must return the right tree when a bookmark is in union of other bookmarks", () => {
+      store.add(new Bookmark("A", "", new Selection(0, 20)));
+      store.add(new Bookmark("B", "", new Selection(10, 30)));
+
+      // This child is contained in the union of parents and in this
+      // case the last parent B becomes the parent
+      store.add(new Bookmark("C", "", new Selection(11, 19)));
+
+      expect(store.count).toBe(3);
+      expect(store.bookmarkTree).toMatchObject([
+        {
+          name: "A"
+        },
+        {
+          name: "B",
           children: [
             {
-              name: "child1",
-              description: "First child",
-              selection: { fromOffset: 16, toOffset: 47 }
-            },
-            {
-              name: "child2",
-              description: "Second child",
-              selection: { fromOffset: 48, toOffset: 79 }
-            },
-            {
-              name: "child3",
-              description: "Third child",
-              selection: { fromOffset: 80, toOffset: 95 }
+              name: "C"
             }
           ]
         }

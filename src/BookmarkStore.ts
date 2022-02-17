@@ -36,13 +36,12 @@ export class BookmarkStore {
   }
 
   public get bookmarkTree(): Bookmark[] {
-    const tree: Bookmark[] = [];
-
-    this.updateParentInfo();
-
     const bookmarks = [...this.bookmarks.values()];
     bookmarks.sort((a, b) => a.selection.fromOffset - b.selection.fromOffset);
 
+    this.updateParentInfo(bookmarks);
+
+    const tree: Bookmark[] = [];
     bookmarks.forEach((bookmark) => {
       if (bookmark.parent !== null) {
         this.bookmarks.get(bookmark.parent)!.children.push(bookmark);
@@ -98,14 +97,12 @@ export class BookmarkStore {
    * E.g. if a bookmark's selection is contained inside another bookmark's selection then its
    * parent id is set to that bookmark
    */
-  private updateParentInfo(): void {
-    this.bookmarks.forEach((bookmarkA) => {
+  private updateParentInfo(bookmarks: Bookmark[]): void {
+    bookmarks.forEach((bookmarkA) => {
       bookmarkA.children = [];
-      this.bookmarks.forEach((bookmarkB) => {
+      bookmarks.forEach((bookmarkB) => {
         if (bookmarkA.id !== bookmarkB.id) {
-          if (bookmarkA.selection.contains(bookmarkB.selection)) {
-            bookmarkB.parent = bookmarkA.id;
-          } else if (bookmarkB.selection.contains(bookmarkA.selection)) {
+          if (bookmarkB.selection.contains(bookmarkA.selection)) {
             bookmarkA.parent = bookmarkB.id;
           }
         }

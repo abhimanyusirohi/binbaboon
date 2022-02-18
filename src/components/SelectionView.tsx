@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
-import Avatar from "@mui/material/Avatar";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
 import Button from "@mui/material/Button";
-import CardHeader from "@mui/material/CardHeader";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -16,15 +11,13 @@ import Tooltip from "@mui/material/Tooltip";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
-import { blue } from "@mui/material/colors";
-
 import ContentCopyIcon from "@mui/icons-material/ContentCopyOutlined";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 import ForwardIcon from "@mui/icons-material/ForwardOutlined";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { Selection } from "../Selection";
 import { SelectionStore } from "../SelectionStore";
+import { ViewContainer } from "./ViewContainer";
 
 export interface SelectionViewProps {
   store: SelectionStore;
@@ -63,72 +56,59 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
   } ➔ ${store.currentSelection.toOffset})`;
 
   return (
-    <Accordion elevation={4} defaultExpanded disableGutters>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: blue[500] }}>
-              <SelectAllIcon />
-            </Avatar>
+    <ViewContainer defaultExpanded={true} icon={<SelectAllIcon />} title="Selection" description={subheader}>
+      <Stack direction="column" spacing={1}>
+        <DataDisplay dataType={`Hex`} dataValue={hexString} wrapValue={false} onCopy={handleCopy} />
+        <ToggleButtonGroup
+          size="small"
+          value={bigEndian}
+          exclusive
+          fullWidth
+          onChange={(_, endianess) => setBigEndian(endianess)}
+        >
+          <ToggleButton value={true}>Big endian</ToggleButton>
+          <ToggleButton value={false}>Little endian</ToggleButton>
+        </ToggleButtonGroup>
+        <DataDisplay
+          dataType={`Int${integerSize}`}
+          dataValue={hasIntRepresentation ? signedValue.toString() : "-"}
+          onCopy={hasIntRepresentation ? handleCopy : undefined}
+          onGoToOffset={
+            hasIntRepresentation && store.isValidSelection(new Selection(signedValue, signedValue))
+              ? handleGoToOffset
+              : undefined
           }
-          title="Selection"
-          subheader={subheader}
         />
-      </AccordionSummary>
-      <AccordionDetails>
-        <Stack direction="column" spacing={1}>
-          <DataDisplay dataType={`Hex`} dataValue={hexString} wrapValue={false} onCopy={handleCopy} />
-          <ToggleButtonGroup
-            size="small"
-            value={bigEndian}
-            exclusive
-            fullWidth
-            onChange={(_, endianess) => setBigEndian(endianess)}
-          >
-            <ToggleButton value={true}>Big endian</ToggleButton>
-            <ToggleButton value={false}>Little endian</ToggleButton>
-          </ToggleButtonGroup>
-          <DataDisplay
-            dataType={`Int${integerSize}`}
-            dataValue={hasIntRepresentation ? signedValue.toString() : "-"}
-            onCopy={hasIntRepresentation ? handleCopy : undefined}
-            onGoToOffset={
-              hasIntRepresentation && store.isValidSelection(new Selection(signedValue, signedValue))
-                ? handleGoToOffset
-                : undefined
-            }
-          />
-          <DataDisplay
-            dataType={`UInt${integerSize}`}
-            dataValue={hasIntRepresentation ? unsignedValue.toString() : "-"}
-            onCopy={hasIntRepresentation ? handleCopy : undefined}
-            onGoToOffset={
-              hasIntRepresentation && store.isValidSelection(new Selection(unsignedValue, unsignedValue))
-                ? handleGoToOffset
-                : undefined
-            }
-          />
-          <DataDisplay
-            dataType="Binary"
-            dataValue={hasIntRepresentation ? binaryString : "-"}
-            onCopy={hasIntRepresentation ? handleCopy : undefined}
-          />
-          <Container disableGutters sx={{ textAlign: "end" }}>
-            <Button variant="contained" size="small" onClick={copySelection}>
-              Copy Bytes
-            </Button>
-          </Container>
-        </Stack>
-        {notificationMessage && (
-          <Snackbar
-            open={notificationMessage.length > 0}
-            autoHideDuration={2000}
-            onClose={() => setNotificationMessage("")}
-            message={notificationMessage}
-          />
-        )}
-      </AccordionDetails>
-    </Accordion>
+        <DataDisplay
+          dataType={`UInt${integerSize}`}
+          dataValue={hasIntRepresentation ? unsignedValue.toString() : "-"}
+          onCopy={hasIntRepresentation ? handleCopy : undefined}
+          onGoToOffset={
+            hasIntRepresentation && store.isValidSelection(new Selection(unsignedValue, unsignedValue))
+              ? handleGoToOffset
+              : undefined
+          }
+        />
+        <DataDisplay
+          dataType="Binary"
+          dataValue={hasIntRepresentation ? binaryString : "-"}
+          onCopy={hasIntRepresentation ? handleCopy : undefined}
+        />
+        <Container disableGutters sx={{ textAlign: "end" }}>
+          <Button variant="contained" size="small" onClick={copySelection}>
+            Copy Bytes
+          </Button>
+        </Container>
+      </Stack>
+      {notificationMessage && (
+        <Snackbar
+          open={notificationMessage.length > 0}
+          autoHideDuration={2000}
+          onClose={() => setNotificationMessage("")}
+          message={notificationMessage}
+        />
+      )}
+    </ViewContainer>
   );
 });
 

@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
-import Avatar from "@mui/material/Avatar";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
 import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
 import Box from "@mui/material/Box";
@@ -12,8 +8,6 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-
-import { blue } from "@mui/material/colors";
 
 import BookmarkIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import BookmarksIcon from "@mui/icons-material/BookmarksOutlined";
@@ -25,6 +19,7 @@ import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import { Bookmark } from "../Bookmark";
 import { BookmarkStore } from "../BookmarkStore";
 import { SelectionStore } from "../SelectionStore";
+import { ViewContainer } from "./ViewContainer";
 
 /**
  * TODOs
@@ -94,32 +89,21 @@ export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer
     };
 
     return (
-      <Card elevation={4}>
-        <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: blue[500] }}>
-              <BookmarkIcon />
-            </Avatar>
-          }
-          title="Bookmarks"
-          subheader="Make bytes meaningful by adding bookmarks"
-        />
-        <CardContent sx={{ overflow: "auto" }}>
-          {bookmarkStore.count > 0 && (
-            <TreeView
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              expanded={getExpandedNodes()}
-              selected={bookmarkStore.selectedBookmark?.id}
-              onNodeSelect={handleSelect}
-              onNodeToggle={handleToggle}
-              sx={{ height: 500 }}
-            >
-              {renderTree(bookmarkStore.bookmarkTree)}
-            </TreeView>
-          )}
-        </CardContent>
-      </Card>
+      <ViewContainer icon={<BookmarkIcon />} title="Bookmarks" description="Make bytes meaningful by adding bookmarks">
+        {bookmarkStore.count > 0 && (
+          <TreeView
+            defaultCollapseIcon={<ExpandMoreIcon />}
+            defaultExpandIcon={<ChevronRightIcon />}
+            expanded={getExpandedNodes()}
+            selected={bookmarkStore.selectedBookmark?.id}
+            onNodeSelect={handleSelect}
+            onNodeToggle={handleToggle}
+            sx={{ overflowY: "auto", minHeight: 240 }}
+          >
+            {renderTree(bookmarkStore.bookmarkTree)}
+          </TreeView>
+        )}
+      </ViewContainer>
     );
   }
 );

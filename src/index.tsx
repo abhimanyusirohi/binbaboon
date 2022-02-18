@@ -69,7 +69,7 @@ const Home: React.FunctionComponent = () => {
   };
 
   return store ? (
-    <App applicationStore={store} onClose={() => setStore(undefined)} />
+    <App store={store} onClose={() => setStore(undefined)} />
   ) : (
     <Stack
       direction="column"

@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Avatar from "@mui/material/Avatar";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
 import Button from "@mui/material/Button";
-import CardHeader from "@mui/material/CardHeader";
 import Checkbox from "@mui/material/Checkbox";
 import Container from "@mui/material/Container";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -21,16 +16,14 @@ import SvgIcon, { SvgIconProps } from "@mui/material/SvgIcon";
 import Tooltip from "@mui/material/Tooltip";
 
 import SearchIcon from "@mui/icons-material/SearchOutlined";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AbcIcon from "@mui/icons-material/AbcOutlined";
 import ArrowCircleUpOutlinedIcon from "@mui/icons-material/ArrowCircleUpOutlined";
 import ArrowCircleDownOutlinedIcon from "@mui/icons-material/ArrowCircleDownOutlined";
 
-import { blue } from "@mui/material/colors";
-
 import { Selection } from "../Selection";
 import { FileStore, FindOption, Match } from "../FileStore";
 import { SelectionStore } from "../SelectionStore";
+import { ViewContainer } from "./ViewContainer";
 
 interface MatchWithText extends Match {
   text: string;
@@ -95,47 +88,39 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({
   };
 
   return (
-    <Accordion elevation={4} defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <CardHeader
-          avatar={
-            <Avatar sx={{ bgcolor: blue[500] }}>
-              <SearchIcon />
-            </Avatar>
+    <ViewContainer
+      defaultExpanded={true}
+      icon={<SearchIcon />}
+      title="Search"
+      description="Search for text or hex values"
+    >
+      <Stack direction="column" alignItems="end" spacing={1}>
+        <OutlinedInput
+          type="text"
+          fullWidth
+          size="small"
+          autoComplete="off"
+          defaultValue={searchText}
+          placeholder={searchType === "text" ? "Search text e.g. PDF" : "Search hex values e.g. FFF0"}
+          onChange={(e) => setSearchText(e.target.value)}
+          onKeyPress={handleSearchKeyPress}
+          startAdornment={<SearchTypeToggleButton checked={searchType === "hex"} onToggle={toggleSearchType} />}
+          endAdornment={
+            searchType === "text" && <SearchTextToggleCaseButton checked={!ignoreCase} onToggle={toggleSearchCase} />
           }
-          title="Search"
-          subheader="Search for text or hex values"
+          inputProps={{ "aria-label": "Search" }}
         />
-      </AccordionSummary>
-      <AccordionDetails>
-        <Stack direction="column" alignItems="end" spacing={1}>
-          <OutlinedInput
-            type="text"
-            fullWidth
-            size="small"
-            autoComplete="off"
-            defaultValue={searchText}
-            placeholder={searchType === "text" ? "Search text e.g. PDF" : "Search hex values e.g. FFF0"}
-            onChange={(e) => setSearchText(e.target.value)}
-            onKeyPress={handleSearchKeyPress}
-            startAdornment={<SearchTypeToggleButton checked={searchType === "hex"} onToggle={toggleSearchType} />}
-            endAdornment={
-              searchType === "text" && <SearchTextToggleCaseButton checked={!ignoreCase} onToggle={toggleSearchCase} />
-            }
-            inputProps={{ "aria-label": "Search" }}
-          />
-          <Button size="small" variant="contained" disabled={searchText.length === 0} onClick={handleSearch}>
-            Search
-          </Button>
-          <SearchResultView
-            matches={searchResults}
-            maximumMatches={maximumMatches}
-            onMatchSelect={selectMatch}
-            onClose={hideSearchResults}
-          />
-        </Stack>
-      </AccordionDetails>
-    </Accordion>
+        <Button size="small" variant="contained" disabled={searchText.length === 0} onClick={handleSearch}>
+          Search
+        </Button>
+        <SearchResultView
+          matches={searchResults}
+          maximumMatches={maximumMatches}
+          onMatchSelect={selectMatch}
+          onClose={hideSearchResults}
+        />
+      </Stack>
+    </ViewContainer>
   );
 };
 

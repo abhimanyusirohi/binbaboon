@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
 
 import { AddBookmarkDialog } from "./AddBookmarkDialog";
 import { BookmarkView } from "./BookmarkView";
@@ -16,11 +17,11 @@ import { SearchView } from "./SearchView";
 import { ApplicationStore } from "../ApplicationStore";
 
 export interface AppProps {
-  applicationStore: ApplicationStore;
+  store: ApplicationStore;
   onClose: SimpleCallback;
 }
 
-export const App: React.FunctionComponent<AppProps> = observer(({ applicationStore, onClose }) => {
+export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose }) => {
   const [addBookmarkDialogShown, showAddBookmarkDialog] = useState<boolean>(false);
   const [openFormatAlertDialog, showOpenFormatAlertDialog] = useState<boolean>(false);
   const [goToOffsetDialogShown, showGoToOffsetDialog] = useState<boolean>(false);
@@ -45,8 +46,8 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
     showOpenFormatAlertDialog(false);
 
     if (result === "Open") {
-      // const records = applicationStore.formatDefinitionStore.readFile();
-      // applicationStore.bookmarkStore.addBookmarksForRecords(records);
+      // const records = store.formatDefinitionStore.readFile();
+      // store.bookmarkStore.addBookmarksForRecords(records);
     }
   };
 
@@ -54,26 +55,25 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
     <Box>
       <Grid container spacing={1} padding={1}>
         <Grid item xs={12}>
-          <MainToolbar store={applicationStore} onCommand={onToolbarCommand} />
+          <MainToolbar store={store} onCommand={onToolbarCommand} />
         </Grid>
         <Grid item lg={3}>
-          <BookmarkView
-            bookmarkStore={applicationStore.bookmarkStore}
-            selectionStore={applicationStore.selectionStore}
-          />
+          <BookmarkView bookmarkStore={store.bookmarkStore} selectionStore={store.selectionStore} />
         </Grid>
         <Grid item lg={6}>
-          <HexView store={applicationStore} />
+          <HexView store={store} />
         </Grid>
         <Grid item lg={3}>
-          <SelectionView store={applicationStore.selectionStore} />
-          <SearchView fileStore={applicationStore.fileStore} selectionStore={applicationStore.selectionStore} />
+          <Stack direction="column" spacing={1}>
+            <SelectionView store={store.selectionStore} />
+            <SearchView fileStore={store.fileStore} selectionStore={store.selectionStore} />
+          </Stack>
         </Grid>
       </Grid>
       {addBookmarkDialogShown && (
         <AddBookmarkDialog
-          store={applicationStore.bookmarkStore}
-          selection={applicationStore.selectionStore.currentSelection}
+          store={store.bookmarkStore}
+          selection={store.selectionStore.currentSelection}
           onClose={() => showAddBookmarkDialog(false)}
         />
       )}
@@ -85,9 +85,7 @@ export const App: React.FunctionComponent<AppProps> = observer(({ applicationSto
           onClose={handleAlertDialog}
         />
       )}
-      {goToOffsetDialogShown && (
-        <GoToOffsetDialog store={applicationStore} onClose={() => showGoToOffsetDialog(false)} />
-      )}
+      {goToOffsetDialogShown && <GoToOffsetDialog store={store} onClose={() => showGoToOffsetDialog(false)} />}
     </Box>
   );
 });

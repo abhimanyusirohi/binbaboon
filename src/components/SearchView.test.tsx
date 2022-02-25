@@ -3,12 +3,12 @@ import userEvent from "@testing-library/user-event";
 
 import { SearchView } from "./SearchView";
 import { ApplicationStore } from "../ApplicationStore";
-import { FileStore } from "../FileStore";
+import { DataStore } from "../DataStore";
 
 const maximumMatches = 10;
 
 describe("SearchView", () => {
-  let fileStore: FileStore;
+  let fileStore: DataStore;
   let store: ApplicationStore;
 
   beforeAll(() => {
@@ -17,7 +17,7 @@ describe("SearchView", () => {
     const lowerCaseA2Z = [..."abcdef".repeat(6)].map((value) => value.charCodeAt(0));
 
     const data = new Uint8Array([...numbers, ...upperCaseA2Z, ...lowerCaseA2Z]);
-    fileStore = new FileStore("test.file", "test-file", data);
+    fileStore = new DataStore("test.file", "test-file", data);
   });
 
   beforeEach(() => {

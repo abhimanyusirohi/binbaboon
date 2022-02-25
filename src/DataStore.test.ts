@@ -1,12 +1,12 @@
-import { FileStore, FindOption } from "./FileStore";
+import { DataStore, FindOption } from "./DataStore";
 
-describe("FileStore", () => {
-  let fileStore: FileStore;
+describe("DataStore", () => {
+  let fileStore: DataStore;
 
   beforeEach(() => {
     // Test data contains characters a-f and A-F
     const data = [..."abcdef", ..."ABCDEF"].map((value) => value.charCodeAt(0));
-    fileStore = new FileStore("test.file", "test/file", new Uint8Array(data));
+    fileStore = new DataStore("test.file", "test/file", new Uint8Array(data));
   });
 
   test("must find text case-sensitive by default", () => {

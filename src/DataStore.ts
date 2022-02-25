@@ -9,8 +9,8 @@ export enum FindOption {
   InterpretAsHex
 }
 
-export class FileStore {
-  constructor(public name: string, public type: string, public data: Uint8Array) {}
+export class DataStore {
+  constructor(public readonly name: string, public readonly type: string, public readonly data: Uint8Array) {}
 
   public get size(): number {
     return this.data.length;

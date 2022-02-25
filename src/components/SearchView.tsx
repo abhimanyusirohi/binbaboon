@@ -21,7 +21,7 @@ import ArrowCircleUpOutlinedIcon from "@mui/icons-material/ArrowCircleUpOutlined
 import ArrowCircleDownOutlinedIcon from "@mui/icons-material/ArrowCircleDownOutlined";
 
 import { Selection } from "../Selection";
-import { FileStore, FindOption, Match } from "../FileStore";
+import { DataStore, FindOption, Match } from "../DataStore";
 import { SelectionStore } from "../SelectionStore";
 import { ViewContainer } from "./ViewContainer";
 
@@ -30,7 +30,7 @@ interface MatchWithText extends Match {
 }
 
 export interface SearchViewProps {
-  fileStore: FileStore;
+  fileStore: DataStore;
   selectionStore: SelectionStore;
   maximumMatches?: number;
 }

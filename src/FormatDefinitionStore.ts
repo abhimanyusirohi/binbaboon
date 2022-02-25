@@ -6,12 +6,12 @@ import { PNGFormatDefinition } from "./definitions/PNGFormatDefinition";
 import { EXEFormatDefinition } from "./definitions/EXEFormatDefinition";
 import { CFBFormatDefinition } from "./definitions/CFBFormatDefinition";
 
-import { FileStore } from "./FileStore";
+import { DataStore } from "./DataStore";
 
 export class FormatDefinitionStore {
   private fileExtension: string;
 
-  constructor(private fileStore: FileStore) {
+  constructor(private fileStore: DataStore) {
     const [extension] = fileStore.name.split(".").reverse();
     this.fileExtension = extension.toLocaleLowerCase();
   }

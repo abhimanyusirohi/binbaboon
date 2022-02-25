@@ -14,7 +14,7 @@ import FileOpenIcon from "@mui/icons-material/FileOpen";
 import { blue } from "@mui/material/colors";
 
 import { ApplicationStore } from "./ApplicationStore";
-import { FileStore } from "./FileStore";
+import { DataStore } from "./DataStore";
 import { App } from "./components/App";
 import { AlertDialog } from "./components/AlertDialog";
 
@@ -50,7 +50,7 @@ const Home: React.FunctionComponent = () => {
         return;
       }
 
-      const fileStore = new FileStore(file.name, file.type, new Uint8Array(fileData));
+      const fileStore = new DataStore(file.name, file.type, new Uint8Array(fileData));
 
       const appStore = new ApplicationStore(fileStore);
       setStore(appStore);

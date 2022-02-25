@@ -3,7 +3,7 @@ import { RecordDefinition } from "./RecordDefinition";
 import { FieldDefinition } from "./FieldDefinition";
 import { ArrayBufferHelper } from "./ArrayBufferHelper";
 
-import { FileStore } from "../FileStore";
+import { DataStore } from "../DataStore";
 import { FormatDefinitionStore } from "../FormatDefinitionStore";
 
 import fs from "fs";
@@ -34,7 +34,7 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/sample.bmp");
     expect(data.length).toBe(3275658);
 
-    const fileStore = new FileStore("sample.bmp", "bmp", data);
+    const fileStore = new DataStore("sample.bmp", "bmp", data);
     const store = new FormatDefinitionStore(fileStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
@@ -64,7 +64,7 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/sample.png");
     expect(data.length).toBe(227963);
 
-    const fileStore = new FileStore("sample.png", "png", data);
+    const fileStore = new DataStore("sample.png", "png", data);
     const store = new FormatDefinitionStore(fileStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
@@ -80,7 +80,7 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/notepad.exe");
     expect(data.length).toBe(202240);
 
-    const fileStore = new FileStore("notepad.exe", "exe", data);
+    const fileStore = new DataStore("notepad.exe", "exe", data);
     const store = new FormatDefinitionStore(fileStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
@@ -97,7 +97,7 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/sample.xls");
     expect(data.length).toBe(19456);
 
-    const fileStore = new FileStore("sample.xls", "cfb", data);
+    const fileStore = new DataStore("sample.xls", "cfb", data);
     const store = new FormatDefinitionStore(fileStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();

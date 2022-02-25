@@ -3,10 +3,10 @@ import userEvent from "@testing-library/user-event";
 
 import { HexView } from "./HexView";
 import { ApplicationStore } from "../ApplicationStore";
-import { FileStore } from "../FileStore";
+import { DataStore } from "../DataStore";
 
 describe("HexView", () => {
-  let fileStore: FileStore;
+  let fileStore: DataStore;
   let store: ApplicationStore;
 
   beforeAll(() => {
@@ -16,7 +16,7 @@ describe("HexView", () => {
 
     // Make test data with printable numbers and letters
     const data = new Uint8Array([...numbers, ...upperCaseA2Z, ...lowerCaseA2Z]);
-    fileStore = new FileStore("test.file", "test-file", data);
+    fileStore = new DataStore("test.file", "test-file", data);
   });
 
   beforeEach(() => {

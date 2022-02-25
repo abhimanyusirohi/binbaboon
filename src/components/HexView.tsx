@@ -48,7 +48,7 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
   // Called once on startup to break the data into fixed size rows
   useEffect(() => {
     const rows = [];
-    const data = store.fileStore.data;
+    const data = store.dataStore.data;
     for (let offset = 0; offset < data.length; ) {
       const rowData = data.slice(offset, offset + bytesPerRow);
       rows.push(rowData);

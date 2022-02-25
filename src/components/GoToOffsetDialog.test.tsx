@@ -12,8 +12,8 @@ describe("GoToOffsetDialog", () => {
 
   beforeEach(() => {
     const data = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-    const fileStore = new DataStore("test.file", "text-file", data);
-    store = new ApplicationStore(fileStore);
+    const dataStore = new DataStore("test.file", "text-file", data);
+    store = new ApplicationStore(dataStore);
 
     store.selectionStore.setSelection(new Selection(1, 3));
     render(<GoToOffsetDialog store={store} onClose={closeHandler} />);

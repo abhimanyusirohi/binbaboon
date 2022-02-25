@@ -34,8 +34,8 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/sample.bmp");
     expect(data.length).toBe(3275658);
 
-    const fileStore = new DataStore("sample.bmp", "bmp", data);
-    const store = new FormatDefinitionStore(fileStore);
+    const dataStore = new DataStore("sample.bmp", "bmp", data);
+    const store = new FormatDefinitionStore(dataStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
     expect(records.length).toBe(3);
@@ -64,8 +64,8 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/sample.png");
     expect(data.length).toBe(227963);
 
-    const fileStore = new DataStore("sample.png", "png", data);
-    const store = new FormatDefinitionStore(fileStore);
+    const dataStore = new DataStore("sample.png", "png", data);
+    const store = new FormatDefinitionStore(dataStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
     expect(records.length).toBe(4);
@@ -80,8 +80,8 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/notepad.exe");
     expect(data.length).toBe(202240);
 
-    const fileStore = new DataStore("notepad.exe", "exe", data);
-    const store = new FormatDefinitionStore(fileStore);
+    const dataStore = new DataStore("notepad.exe", "exe", data);
+    const store = new FormatDefinitionStore(dataStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
     expect(records.length).toBe(5);
@@ -97,8 +97,8 @@ describe("format reader", () => {
     const data = fs.readFileSync("./src/test-data/sample.xls");
     expect(data.length).toBe(19456);
 
-    const fileStore = new DataStore("sample.xls", "cfb", data);
-    const store = new FormatDefinitionStore(fileStore);
+    const dataStore = new DataStore("sample.xls", "cfb", data);
+    const store = new FormatDefinitionStore(dataStore);
     expect(store.hasFormatDefinition).toBeTruthy();
     const records = store.readFile();
     expect(records.length).toBe(1);

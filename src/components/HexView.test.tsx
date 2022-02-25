@@ -6,7 +6,7 @@ import { ApplicationStore } from "../ApplicationStore";
 import { DataStore } from "../DataStore";
 
 describe("HexView", () => {
-  let fileStore: DataStore;
+  let dataStore: DataStore;
   let store: ApplicationStore;
 
   beforeAll(() => {
@@ -16,11 +16,11 @@ describe("HexView", () => {
 
     // Make test data with printable numbers and letters
     const data = new Uint8Array([...numbers, ...upperCaseA2Z, ...lowerCaseA2Z]);
-    fileStore = new DataStore("test.file", "test-file", data);
+    dataStore = new DataStore("test.file", "test-file", data);
   });
 
   beforeEach(() => {
-    store = new ApplicationStore(fileStore);
+    store = new ApplicationStore(dataStore);
     render(<HexView store={store} bytesPerRow={16} />);
   });
 

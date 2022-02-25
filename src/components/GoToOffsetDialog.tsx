@@ -20,7 +20,7 @@ export const GoToOffsetDialog: React.FunctionComponent<GoToOffsetDialogProps> = 
   const [offset, setOffset] = useState<number>(store.selectionStore.currentSelection.fromOffset);
 
   const offsetValid = () => {
-    return offset >= 0 && offset < store.fileStore.size;
+    return offset >= 0 && offset < store.dataStore.size;
   };
 
   const handleGoToOffset = () => {
@@ -33,7 +33,7 @@ export const GoToOffsetDialog: React.FunctionComponent<GoToOffsetDialogProps> = 
     <Dialog open={true} onClose={onClose}>
       <DialogTitle>Go To Offset</DialogTitle>
       <DialogContent>
-        <DialogContentText>{`Specify an offset value between 0 and ${store.fileStore.size - 1}`}</DialogContentText>
+        <DialogContentText>{`Specify an offset value between 0 and ${store.dataStore.size - 1}`}</DialogContentText>
         <TextField
           id="offset"
           label="Offset"

@@ -11,8 +11,8 @@ import { DataStore } from "./DataStore";
 export class FormatDefinitionStore {
   private fileExtension: string;
 
-  constructor(private fileStore: DataStore) {
-    const [extension] = fileStore.name.split(".").reverse();
+  constructor(private dataStore: DataStore) {
+    const [extension] = dataStore.name.split(".").reverse();
     this.fileExtension = extension.toLocaleLowerCase();
   }
 
@@ -22,7 +22,7 @@ export class FormatDefinitionStore {
 
   public readFile(): Record[] {
     const format = this.getFormatDefinition();
-    return format.read(this.fileStore.data.buffer);
+    return format.read(this.dataStore.data.buffer);
   }
 
   private getFormatDefinition(): FormatDefinition {

@@ -30,13 +30,13 @@ interface MatchWithText extends Match {
 }
 
 export interface SearchViewProps {
-  fileStore: DataStore;
+  dataStore: DataStore;
   selectionStore: SelectionStore;
   maximumMatches?: number;
 }
 
 export const SearchView: React.FunctionComponent<SearchViewProps> = ({
-  fileStore,
+  dataStore,
   selectionStore,
   maximumMatches = 250
 }) => {
@@ -53,13 +53,13 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({
       findOption = FindOption.IgnoreCase;
     }
 
-    const matches = fileStore.find(searchText, findOption, maximumMatches);
+    const matches = dataStore.find(searchText, findOption, maximumMatches);
 
     // Convert matches from "find" to MatchWithText containing a text value that shows the matched data
     const matchesWithText = matches.map((match) => ({
       from: match.from,
       to: match.to,
-      text: String.fromCharCode(...fileStore.data.slice(match.from, match.from + 32))
+      text: String.fromCharCode(...dataStore.data.slice(match.from, match.from + 32))
     }));
     setSearchResults(matchesWithText);
   };

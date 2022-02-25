@@ -8,7 +8,7 @@ import { DataStore } from "../DataStore";
 const maximumMatches = 10;
 
 describe("SearchView", () => {
-  let fileStore: DataStore;
+  let dataStore: DataStore;
   let store: ApplicationStore;
 
   beforeAll(() => {
@@ -17,13 +17,13 @@ describe("SearchView", () => {
     const lowerCaseA2Z = [..."abcdef".repeat(6)].map((value) => value.charCodeAt(0));
 
     const data = new Uint8Array([...numbers, ...upperCaseA2Z, ...lowerCaseA2Z]);
-    fileStore = new DataStore("test.file", "test-file", data);
+    dataStore = new DataStore("test.file", "test-file", data);
   });
 
   beforeEach(() => {
-    store = new ApplicationStore(fileStore);
+    store = new ApplicationStore(dataStore);
     render(
-      <SearchView fileStore={store.fileStore} selectionStore={store.selectionStore} maximumMatches={maximumMatches} />
+      <SearchView dataStore={store.dataStore} selectionStore={store.selectionStore} maximumMatches={maximumMatches} />
     );
   });
 

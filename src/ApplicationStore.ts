@@ -8,8 +8,8 @@ export class ApplicationStore {
   public bookmarkStore = new BookmarkStore();
   public formatDefinitionStore: FormatDefinitionStore;
 
-  constructor(public fileStore: DataStore) {
-    this.selectionStore = new SelectionStore(fileStore.data);
-    this.formatDefinitionStore = new FormatDefinitionStore(fileStore);
+  constructor(public dataStore: DataStore) {
+    this.selectionStore = new SelectionStore(dataStore.data);
+    this.formatDefinitionStore = new FormatDefinitionStore(dataStore);
   }
 }

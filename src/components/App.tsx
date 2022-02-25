@@ -66,7 +66,7 @@ export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose
         <Grid item lg={3}>
           <Stack direction="column" spacing={1}>
             <SelectionView store={store.selectionStore} />
-            <SearchView fileStore={store.fileStore} selectionStore={store.selectionStore} />
+            <SearchView dataStore={store.dataStore} selectionStore={store.selectionStore} />
           </Stack>
         </Grid>
       </Grid>

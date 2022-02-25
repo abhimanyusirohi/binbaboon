@@ -1,7 +1,3 @@
-//
-// Format
-//
-
 import { Field } from "./Field";
 import { FieldDefinition, OptionalFieldDefinition } from "./FieldDefinition";
 import { Record } from "./Record";
@@ -14,7 +10,7 @@ export enum ByteOrder {
   LittleEndian
 }
 
-export class Format {
+export class FormatDefinition {
   // Maps [RecordName].[FieldName] to Field object
   private fieldsMap: Map<string, Field> = new Map<string, Field>();
 

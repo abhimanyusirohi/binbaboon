@@ -1,4 +1,4 @@
-import { Format } from "./Format";
+import { FormatDefinition } from "./FormatDefinition";
 import { RecordDefinition } from "./RecordDefinition";
 import { FieldDefinition } from "./FieldDefinition";
 import { ArrayBufferHelper } from "./ArrayBufferHelper";
@@ -16,7 +16,7 @@ describe("format reader", () => {
     const definitions: RecordDefinition[] = [];
     definitions.push(recordDefinition);
 
-    const format = new Format("Test Format", definitions);
+    const format = new FormatDefinition("Test FormatDefinition", definitions);
 
     const data = Buffer.from("XXXXYYYYZZZZ");
     const records = format.read(data);
@@ -110,7 +110,7 @@ describe("format reader", () => {
   });
 });
 
-// function printRecord(format: Format, record: Record): string {
+// function printRecord(format: FormatDefinition, record: Record): string {
 //   let message = `${record.definition.name}`;
 //   message += record.definition.description ? `- ${record.definition.description}` : "";
 //   for (const f of record.fields) {

@@ -1,4 +1,4 @@
-import { ByteOrder } from "./Format";
+import { ByteOrder } from "./FormatDefinition";
 
 export class ArrayBufferHelper {
   public static bufferAsUInt(buffer: ArrayBuffer, byteOrder: ByteOrder = ByteOrder.LittleEndian): number {

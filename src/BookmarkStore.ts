@@ -21,7 +21,8 @@ export class BookmarkStore {
       selectedBookmark: computed,
       bookmarkTree: computed,
       selectBookmark: action,
-      add: action
+      add: action,
+      delete: action
     });
   }
 
@@ -71,6 +72,8 @@ export class BookmarkStore {
       throw new Error(`A bookmark with id "${id}" does not exist`);
     }
 
+    // Delete bookmark and all its children
+    this.bookmarks.get(id)!.children.forEach((child) => this.delete(child.id));
     this.bookmarks.delete(id);
   }
 

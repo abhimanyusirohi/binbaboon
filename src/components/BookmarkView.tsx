@@ -95,7 +95,7 @@ export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer
             defaultCollapseIcon={<ExpandMoreIcon />}
             defaultExpandIcon={<ChevronRightIcon />}
             expanded={getExpandedNodes()}
-            selected={bookmarkStore.selectedBookmark?.id}
+            selected={bookmarkStore.selectedBookmark !== null ? bookmarkStore.selectedBookmark.id : ""}
             onNodeSelect={handleSelect}
             onNodeToggle={handleToggle}
             sx={{ overflowY: "auto", minHeight: 240 }}

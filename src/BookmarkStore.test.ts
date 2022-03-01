@@ -208,5 +208,30 @@ describe("BookmarkStore", () => {
         }
       ]);
     });
+
+    test("must delete child bookmarks when parent is deleted", () => {
+      const parent = new Bookmark("X", "", new Selection(200, 400));
+      store.add(parent);
+      store.add(new Bookmark("Y", "", new Selection(250, 260)));
+      store.add(new Bookmark("Z", "", new Selection(270, 280)));
+
+      expect(store.count).toBe(3);
+      expect(store.bookmarkTree).toMatchObject([
+        {
+          name: "X",
+          children: [
+            {
+              name: "Y"
+            },
+            {
+              name: "Z"
+            }
+          ]
+        }
+      ]);
+
+      store.delete(parent.id);
+      expect(store.bookmarkTree).toMatchObject([]);
+    });
   });
 });

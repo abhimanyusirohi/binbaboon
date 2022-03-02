@@ -88,12 +88,7 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({
   };
 
   return (
-    <ViewContainer
-      defaultExpanded={true}
-      icon={<SearchIcon />}
-      title="Search"
-      description="Search for text or hex values"
-    >
+    <ViewContainer icon={<SearchIcon />} title="Search" description="Search for text or hex values">
       <Stack direction="column" alignItems="end" spacing={1}>
         <OutlinedInput
           type="text"

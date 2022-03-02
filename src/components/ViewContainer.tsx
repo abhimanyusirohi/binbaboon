@@ -12,18 +12,11 @@ export interface ViewContainerProps {
   icon: ReactNode;
   title: string;
   description: string;
-  defaultExpanded?: boolean;
 }
 
-export const ViewContainer: React.FC<ViewContainerProps> = ({
-  icon,
-  title,
-  description,
-  defaultExpanded = false,
-  children
-}) => {
+export const ViewContainer: React.FC<ViewContainerProps> = ({ icon, title, description, children }) => {
   return (
-    <Accordion elevation={4} defaultExpanded={defaultExpanded} disableGutters>
+    <Accordion elevation={4} defaultExpanded={true} disableGutters>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <CardHeader
           avatar={<Avatar sx={{ bgcolor: "primary.main" }}>{icon}</Avatar>}

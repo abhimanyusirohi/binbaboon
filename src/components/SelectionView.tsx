@@ -56,7 +56,7 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
   } ➔ ${store.currentSelection.toOffset})`;
 
   return (
-    <ViewContainer defaultExpanded={true} icon={<SelectAllIcon />} title="Selection" description={subheader}>
+    <ViewContainer icon={<SelectAllIcon />} title="Selection" description={subheader}>
       <Stack direction="column" spacing={1}>
         <DataDisplay dataType={`Hex`} dataValue={hexString} wrapValue={false} onCopy={handleCopy} />
         <ToggleButtonGroup

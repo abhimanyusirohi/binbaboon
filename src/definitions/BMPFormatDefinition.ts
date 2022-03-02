@@ -96,6 +96,9 @@ export class BMPFormatDefinition extends FormatDefinition {
       new FieldDefinition("Data", "InfoHeader.ImageSize")
     ]);
 
-    super("Bitmap", [header, infoHeader, colorTable, pixelData]);
+    super("Bitmap Image", [header, infoHeader, colorTable, pixelData]);
+
+    this.description = "Microsoft's bitmap image file format";
+    this.specificationUrl = "https://en.wikipedia.org/wiki/BMP_file_format";
   }
 }

@@ -13,10 +13,9 @@ export class EXEFormatDefinition extends FormatDefinition {
     const dosHeader = new RecordDefinition("DOSHeader", "PESignatureOffset", [
       new FieldDefinition("Signature", 2),
       new FieldDefinition("Other", 58),
-      new FieldDefinition("PESignatureOffset", 4)
+      new FieldDefinition("PESignatureOffset", 4),
+      new FieldDefinition("PESignature", 4)
     ]);
-
-    const peSignature = new RecordDefinition("PESignature", 4, [new FieldDefinition("Signature", 4)]);
 
     const coffHeader = new RecordDefinition("COFFHeader", 20, [
       new FieldDefinition("Machine", 2),
@@ -113,12 +112,9 @@ export class EXEFormatDefinition extends FormatDefinition {
       new FieldDefinition("NumberOfRvaAndSizes", 4)
     ]);
 
-    super("Microsoft Portable Executable", [
-      dosHeader,
-      peSignature,
-      coffHeader,
-      optionalStandardHeader,
-      optionalWinSpecificHeader
-    ]);
+    super("Microsoft Portable Executable", [dosHeader, coffHeader, optionalStandardHeader, optionalWinSpecificHeader]);
+
+    this.description = "Microsoft's Portable Executable (PE) format";
+    this.specificationUrl = "https://docs.microsoft.com/en-us/windows/win32/debug/pe-format";
   }
 }

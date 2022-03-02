@@ -31,5 +31,8 @@ export class PNGFormatDefinition extends FormatDefinition {
     super("Portable Network Graphics", [header, chunk], {
       byteOrder: ByteOrder.BigEndian
     });
+
+    this.description = "Portable Network Graphics format";
+    this.specificationUrl = "https://en.wikipedia.org/wiki/Portable_Network_Graphics";
   }
 }

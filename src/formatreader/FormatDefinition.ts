@@ -14,8 +14,8 @@ export class FormatDefinition {
   // Maps [RecordName].[FieldName] to Field object
   private fieldsMap: Map<string, Field> = new Map<string, Field>();
 
-  public description: string | null = null;
-  public specificationUrl: string | null = null;
+  public description = "";
+  public specificationUrl = "";
 
   constructor(
     public readonly name: string,
@@ -24,6 +24,10 @@ export class FormatDefinition {
       byteOrder: ByteOrder.LittleEndian
     }
   ) {}
+
+  public get byteOrdering(): ByteOrder {
+    return this.config.byteOrder;
+  }
 
   private getFieldValueByName(fieldName: string, recordName: string): ArrayBuffer {
     const hasDot = fieldName.includes(".");

@@ -1,46 +1,41 @@
 import { FormatDefinition } from "./formatreader/FormatDefinition";
-import { Record } from "./formatreader/Record";
 
 import { BMPFormatDefinition } from "./definitions/BMPFormatDefinition";
 import { PNGFormatDefinition } from "./definitions/PNGFormatDefinition";
 import { EXEFormatDefinition } from "./definitions/EXEFormatDefinition";
 import { CFBFormatDefinition } from "./definitions/CFBFormatDefinition";
 
-import { DataStore } from "./DataStore";
-
 export class FormatDefinitionStore {
-  private fileExtension: string;
+  private formatDefinition: FormatDefinition | undefined;
 
-  constructor(private dataStore: DataStore) {
-    const [extension] = dataStore.name.split(".").reverse();
-    this.fileExtension = extension.toLocaleLowerCase();
+  constructor(dataName: string) {
+    this.inferFormatFromDataName(dataName);
   }
 
   public get hasFormatDefinition(): boolean {
-    return ["bmp", "png", "exe", "xls"].includes(this.fileExtension);
+    return this.formatDefinition !== undefined;
   }
 
-  public readFile(): Record[] {
-    const format = this.getFormatDefinition();
-    return format.read(this.dataStore.data.buffer);
+  public getFormatDefinition(): FormatDefinition {
+    if (this.formatDefinition === undefined) {
+      throw new Error("No format definition is available");
+    }
+
+    return this.formatDefinition;
   }
 
-  private getFormatDefinition(): FormatDefinition {
-    switch (this.fileExtension) {
-      case "bmp":
-        return new BMPFormatDefinition();
+  private inferFormatFromDataName(dataName: string): void {
+    // Assume data name is like a file name with an extension
+    const [extension] = dataName.toLocaleLowerCase().split(".").reverse();
 
-      case "png":
-        return new PNGFormatDefinition();
-
-      case "exe":
-        return new EXEFormatDefinition();
-
-      case "xls":
-        return new CFBFormatDefinition();
-
-      default:
-        throw new Error("No format definition available for extension: " + this.fileExtension);
+    if (["doc", "ppt", "xls"].includes(extension)) {
+      this.formatDefinition = new CFBFormatDefinition();
+    } else if (["bmp", "dib"].includes(extension)) {
+      this.formatDefinition = new BMPFormatDefinition();
+    } else if (["exe", "dll", "ocx"].includes(extension)) {
+      this.formatDefinition = new EXEFormatDefinition();
+    } else if (["png"].includes(extension)) {
+      this.formatDefinition = new PNGFormatDefinition();
     }
   }
 }

@@ -10,9 +10,9 @@ import { BookmarkView } from "./BookmarkView";
 import { SelectionView } from "./SelectionView";
 import { GoToOffsetDialog } from "./GoToOffsetDialog";
 import { HexView } from "./HexView";
-import { AlertDialog } from "./AlertDialog";
 import { MainToolbar } from "./MainToolbar";
 import { SearchView } from "./SearchView";
+import { ApplyDefinitionDialog } from "./ApplyDefinitionDialog";
 
 import { ApplicationStore } from "../ApplicationStore";
 
@@ -23,7 +23,6 @@ export interface AppProps {
 
 export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose }) => {
   const [addBookmarkDialogShown, showAddBookmarkDialog] = useState<boolean>(false);
-  const [openFormatAlertDialog, showOpenFormatAlertDialog] = useState<boolean>(false);
   const [goToOffsetDialogShown, showGoToOffsetDialog] = useState<boolean>(false);
 
   const onToolbarCommand = (commandId: string): void => {
@@ -42,15 +41,6 @@ export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose
     }
   };
 
-  const handleAlertDialog = (result: string) => {
-    showOpenFormatAlertDialog(false);
-
-    if (result === "Open") {
-      // const records = store.formatDefinitionStore.readFile();
-      // store.bookmarkStore.addBookmarksForRecords(records);
-    }
-  };
-
   return (
     <Box>
       <Grid container spacing={1} padding={1}>
@@ -58,7 +48,9 @@ export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose
           <MainToolbar store={store} onCommand={onToolbarCommand} />
         </Grid>
         <Grid item lg={3}>
-          <BookmarkView bookmarkStore={store.bookmarkStore} selectionStore={store.selectionStore} />
+          <Stack direction="column" spacing={1}>
+            <BookmarkView bookmarkStore={store.bookmarkStore} selectionStore={store.selectionStore} />
+          </Stack>
         </Grid>
         <Grid item lg={6}>
           <HexView store={store} />
@@ -77,15 +69,8 @@ export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose
           onClose={() => showAddBookmarkDialog(false)}
         />
       )}
-      {openFormatAlertDialog && (
-        <AlertDialog
-          title="Open using format definition"
-          infoText="Format definition is available for this file. A format definition tags raw bytes as records and fields.\nDo you want to open this file using the available format definition?"
-          buttonText={["Close", "Open"]}
-          onClose={handleAlertDialog}
-        />
-      )}
       {goToOffsetDialogShown && <GoToOffsetDialog store={store} onClose={() => showGoToOffsetDialog(false)} />}
+      <ApplyDefinitionDialog dataStore={store.dataStore} bookmarkStore={store.bookmarkStore} />
     </Box>
   );
 });

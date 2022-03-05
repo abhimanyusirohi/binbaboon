@@ -17,7 +17,9 @@
 }
 
 .ByteSelected {
-  color: white;
+  /* The following two colors are taken from the mui 
+    default theme (primary.contrastText and primary.main) */
+  color: #fff;
   background-color: #1976d2;
 }
 

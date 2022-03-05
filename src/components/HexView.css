@@ -12,11 +12,13 @@
   display: inline-block;
   line-height: 1.5vw;
   text-align: center;
+  font-family: "Roboto Mono";
+  font-size: 0.8vw;
 }
 
 .ByteSelected {
   color: white;
-  background-color: rgba(0, 0, 255, 0.7);
+  background-color: #1976d2;
 }
 
 .ByteSequenceDividerMargin {
@@ -28,9 +30,10 @@
 }
 
 .HeaderByte {
-  font-weight: bold;
+  color: gray;
 }
 
 .HeaderRow {
   border-bottom: lightgray solid 2px;
+  overflow-y: scroll;
 }

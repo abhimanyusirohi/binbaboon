@@ -121,7 +121,8 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
         }}
         width={"100%"}
         layout="vertical"
-        className="NoTextSelect p-0"
+        className="NoTextSelect"
+        style={{ overflowY: "scroll" }}
       >
         {FixedSizeListRow}
       </FixedSizeList>
@@ -159,7 +160,9 @@ const FixedSizeListRow: React.FunctionComponent<FixedSizeListRowProps> = observe
         </Grid>
         <Grid item xs={2} display="flex" alignItems="center" justifyContent="center">
           <Tooltip title={rowOffset} arrow>
-            <span>{rowOffset.toString(16).padStart(6, "0").toUpperCase()}</span>
+            <span className={classNames("Byte", "HeaderByte")}>
+              {rowOffset.toString(16).padStart(6, "0").toUpperCase()}
+            </span>
           </Tooltip>
         </Grid>
         <Grid item lg={9}>
@@ -268,7 +271,7 @@ const HexViewHeaderRow: React.FunctionComponent<HexViewHeaderRowProps> = ({ coun
   ));
 
   return (
-    <Grid container className="NoTextSelect HeaderRow" columns={16}>
+    <Grid container className="NoTextSelect HeaderRow" columns={16} flexWrap="nowrap" alignItems="center">
       <Grid item lg={1} />
       <Grid item lg={2} />
       <Grid item lg={9}>

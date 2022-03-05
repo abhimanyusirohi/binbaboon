@@ -70,7 +70,9 @@ export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose
         />
       )}
       {goToOffsetDialogShown && <GoToOffsetDialog store={store} onClose={() => showGoToOffsetDialog(false)} />}
-      <ApplyDefinitionDialog dataStore={store.dataStore} bookmarkStore={store.bookmarkStore} />
+      {store.dataStore.hasFormatDefinition && (
+        <ApplyDefinitionDialog dataStore={store.dataStore} bookmarkStore={store.bookmarkStore} />
+      )}
     </Box>
   );
 });

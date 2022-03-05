@@ -23,6 +23,7 @@ import backgroundImage from "./background.png";
 
 import "./index.css";
 import "@fontsource/roboto";
+import "@fontsource/roboto-mono";
 
 const Home: React.FunctionComponent = () => {
   const [store, setStore] = useState<ApplicationStore>();

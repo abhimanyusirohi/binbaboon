@@ -1,3 +1,3 @@
 # BinBaboon
 
-BinBaboon is a web application that displays files in hexadecimal and allows bookmarking bytes
+BinBaboon is a web application that displays files in hexadecimal and allows bookmarking raw bytes

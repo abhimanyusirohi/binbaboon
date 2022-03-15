@@ -38,6 +38,7 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
     x: window.innerWidth,
     y: window.innerHeight
   });
+  const [goToOffsetDialogShown, showGoToOffsetDialog] = useState<boolean>(false);
 
   const updateSize = () =>
     setWindowSize({
@@ -108,27 +109,35 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
 
   const itemSize = 0.015 * windowSize.x;
   return (
-    <Paper elevation={2}>
-      <HexViewHeaderRow count={bytesPerRow} onScrollTop={scrollToTop} onScrollBottom={scrollToBottom} />
-      <FixedSizeList
-        ref={gridRef}
-        height={0.85 * windowSize.y}
-        itemCount={rows.length}
-        itemSize={itemSize}
-        itemData={{
-          rows,
-          bytesPerRow,
-          store,
-          onMouseEvent: onByteMouseEvent
-        }}
-        width={"100%"}
-        layout="vertical"
-        className="NoTextSelect"
-        style={{ overflowY: "scroll" }}
-      >
-        {FixedSizeListRow}
-      </FixedSizeList>
-    </Paper>
+    <>
+      <Paper elevation={2}>
+        <HexViewHeaderRow
+          count={bytesPerRow}
+          onScrollTop={scrollToTop}
+          onScrollBottom={scrollToBottom}
+          onGoToOffset={() => showGoToOffsetDialog(true)}
+        />
+        <FixedSizeList
+          ref={gridRef}
+          height={0.85 * windowSize.y}
+          itemCount={rows.length}
+          itemSize={itemSize}
+          itemData={{
+            rows,
+            bytesPerRow,
+            store,
+            onMouseEvent: onByteMouseEvent
+          }}
+          width={"100%"}
+          layout="vertical"
+          className="NoTextSelect"
+          style={{ overflowY: "scroll" }}
+        >
+          {FixedSizeListRow}
+        </FixedSizeList>
+      </Paper>
+      {goToOffsetDialogShown && <GoToOffsetDialog store={store} onClose={() => showGoToOffsetDialog(false)} />}
+    </>
   );
 });
 
@@ -258,12 +267,18 @@ interface HexViewHeaderRowProps {
   count: number;
   onScrollTop: SimpleCallback;
   onScrollBottom: SimpleCallback;
+  onGoToOffset: SimpleCallback;
 }
 
 /**
  * Component that represents the non-clickable header of the view
  */
-const HexViewHeaderRow: React.FunctionComponent<HexViewHeaderRowProps> = ({ count, onScrollTop, onScrollBottom }) => {
+const HexViewHeaderRow: React.FunctionComponent<HexViewHeaderRowProps> = ({
+  count,
+  onScrollTop,
+  onScrollBottom,
+  onGoToOffset
+}) => {
   // Make sequence of values
   const headerValues = [...Array<number>(count)].map((_, index) => index);
   const bytes = headerValues.map((value, index) => (
@@ -282,17 +297,17 @@ const HexViewHeaderRow: React.FunctionComponent<HexViewHeaderRowProps> = ({ coun
       <Grid item lg={4}>
         <Stack direction="row" justifyContent="flex-end">
           <Tooltip title="Scroll to top" arrow>
-            <IconButton size="medium" color="inherit" onClick={onScrollTop}>
+            <IconButton size="medium" color="primary" onClick={onScrollTop}>
               <ScrollToTopIcon fontSize="inherit" className="Rotated90Clockwise" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Scroll to bottom" arrow>
-            <IconButton size="medium" color="inherit" onClick={onScrollBottom}>
+            <IconButton size="medium" color="primary" onClick={onScrollBottom}>
               <ScrollToBottomIcon fontSize="inherit" className="Rotated90Clockwise" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Scroll to bottom" arrow>
-            <IconButton size="medium" color="inherit" onClick={onScrollBottom}>
+          <Tooltip title="Go to offset" arrow>
+            <IconButton size="medium" color="primary" onClick={onGoToOffset}>
               <GoToOffsetIcon fontSize="inherit" />
             </IconButton>
           </Tooltip>

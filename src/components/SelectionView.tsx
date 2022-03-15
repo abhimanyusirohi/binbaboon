@@ -56,8 +56,8 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
   } ➔ ${store.currentSelection.toOffset})`;
 
   return (
-    <ViewContainer icon={<SelectAllIcon />} title="Selection" description={subheader}>
-      <Stack direction="column" spacing={1}>
+    <>
+      <ViewContainer icon={<SelectAllIcon />} title="Selection" description={subheader}>
         <DataDisplay dataType={`Hex`} dataValue={hexString} wrapValue={false} onCopy={handleCopy} />
         <ToggleButtonGroup
           size="small"
@@ -99,7 +99,7 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
             Copy Bytes
           </Button>
         </Container>
-      </Stack>
+      </ViewContainer>
       {notificationMessage && (
         <Snackbar
           open={notificationMessage.length > 0}
@@ -108,7 +108,7 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
           message={notificationMessage}
         />
       )}
-    </ViewContainer>
+    </>
   );
 });
 

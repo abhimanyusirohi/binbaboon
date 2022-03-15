@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
+import Button from "@mui/material/Button";
 import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
 import Box from "@mui/material/Box";
@@ -20,6 +21,7 @@ import { Bookmark } from "../Bookmark";
 import { BookmarkStore } from "../BookmarkStore";
 import { SelectionStore } from "../SelectionStore";
 import { ViewContainer } from "./ViewContainer";
+import { AddBookmarkDialog } from "./AddBookmarkDialog";
 
 /**
  * TODOs
@@ -34,6 +36,7 @@ export interface BookmarkViewProps {
 export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer(
   ({ bookmarkStore, selectionStore }) => {
     const [expanded, setExpanded] = useState<string[]>([]);
+    const [addBookmarkDialogShown, showAddBookmarkDialog] = useState<boolean>(false);
 
     const handleToggle = (event: React.SyntheticEvent, nodeIds: string[]) => {
       setExpanded(nodeIds);
@@ -89,21 +92,37 @@ export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer
     };
 
     return (
-      <ViewContainer icon={<BookmarkIcon />} title="Bookmarks" description="Make bytes meaningful by adding bookmarks">
-        {bookmarkStore.count > 0 && (
-          <TreeView
-            defaultCollapseIcon={<ExpandMoreIcon />}
-            defaultExpandIcon={<ChevronRightIcon />}
-            expanded={getExpandedNodes()}
-            selected={bookmarkStore.selectedBookmark !== null ? bookmarkStore.selectedBookmark.id : ""}
-            onNodeSelect={handleSelect}
-            onNodeToggle={handleToggle}
-            sx={{ overflowY: "auto", minHeight: 240 }}
-          >
-            {renderTree(bookmarkStore.bookmarkTree)}
-          </TreeView>
+      <>
+        <ViewContainer
+          icon={<BookmarkIcon />}
+          title="Bookmarks"
+          description="Make bytes meaningful by adding bookmarks"
+        >
+          {bookmarkStore.count > 0 && (
+            <TreeView
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpandIcon={<ChevronRightIcon />}
+              expanded={getExpandedNodes()}
+              selected={bookmarkStore.selectedBookmark !== null ? bookmarkStore.selectedBookmark.id : ""}
+              onNodeSelect={handleSelect}
+              onNodeToggle={handleToggle}
+              sx={{ overflowY: "auto", minHeight: 240, width: "100%" }}
+            >
+              {renderTree(bookmarkStore.bookmarkTree)}
+            </TreeView>
+          )}
+          <Button variant="contained" size="small" onClick={() => showAddBookmarkDialog(true)}>
+            Add
+          </Button>
+        </ViewContainer>
+        {addBookmarkDialogShown && (
+          <AddBookmarkDialog
+            store={bookmarkStore}
+            selection={selectionStore.currentSelection}
+            onClose={() => showAddBookmarkDialog(false)}
+          />
         )}
-      </ViewContainer>
+      </>
     );
   }
 );

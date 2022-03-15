@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
+import Fab from "@mui/material/Fab";
 
-import { AddBookmarkDialog } from "./AddBookmarkDialog";
+import CloseIcon from "@mui/icons-material/CloseOutlined";
+
 import { BookmarkView } from "./BookmarkView";
 import { SelectionView } from "./SelectionView";
-import { GoToOffsetDialog } from "./GoToOffsetDialog";
 import { HexView } from "./HexView";
-import { MainToolbar } from "./MainToolbar";
+import { FileInfoView } from "./FileInfoView";
 import { SearchView } from "./SearchView";
 import { ApplyDefinitionDialog } from "./ApplyDefinitionDialog";
 
@@ -22,33 +22,12 @@ export interface AppProps {
 }
 
 export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose }) => {
-  const [addBookmarkDialogShown, showAddBookmarkDialog] = useState<boolean>(false);
-  const [goToOffsetDialogShown, showGoToOffsetDialog] = useState<boolean>(false);
-
-  const onToolbarCommand = (commandId: string): void => {
-    switch (commandId) {
-      case "binbaboon.file.close":
-        onClose();
-        break;
-
-      case "binbaboon.bookmark.add":
-        showAddBookmarkDialog(true);
-        break;
-
-      case "binbaboon.selection.gotooffset":
-        showGoToOffsetDialog(true);
-        break;
-    }
-  };
-
   return (
-    <Box>
+    <>
       <Grid container spacing={1} padding={1}>
-        <Grid item xs={12}>
-          <MainToolbar store={store} onCommand={onToolbarCommand} />
-        </Grid>
         <Grid item lg={3}>
           <Stack direction="column" spacing={1}>
+            <FileInfoView store={store.dataStore} />
             <BookmarkView bookmarkStore={store.bookmarkStore} selectionStore={store.selectionStore} />
           </Stack>
         </Grid>
@@ -62,17 +41,18 @@ export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose
           </Stack>
         </Grid>
       </Grid>
-      {addBookmarkDialogShown && (
-        <AddBookmarkDialog
-          store={store.bookmarkStore}
-          selection={store.selectionStore.currentSelection}
-          onClose={() => showAddBookmarkDialog(false)}
-        />
-      )}
-      {goToOffsetDialogShown && <GoToOffsetDialog store={store} onClose={() => showGoToOffsetDialog(false)} />}
+      <Fab
+        color="error"
+        size="small"
+        aria-label="close"
+        style={{ position: "absolute", top: 4, left: 4 }}
+        onClick={onClose}
+      >
+        <CloseIcon />
+      </Fab>
       {store.dataStore.hasFormatDefinition && (
         <ApplyDefinitionDialog dataStore={store.dataStore} bookmarkStore={store.bookmarkStore} />
       )}
-    </Box>
+    </>
   );
 });

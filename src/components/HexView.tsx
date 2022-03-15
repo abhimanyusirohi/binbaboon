@@ -14,11 +14,13 @@ import Stack from "@mui/material/Stack";
 import BookmarkIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import ScrollToTopIcon from "@mui/icons-material/FirstPageOutlined";
 import ScrollToBottomIcon from "@mui/icons-material/LastPageOutlined";
+import GoToOffsetIcon from "@mui/icons-material/ForwardOutlined";
 
 import { observer } from "mobx-react-lite";
 
 import "./HexView.css";
 import { SelectionStore } from "../SelectionStore";
+import { GoToOffsetDialog } from "./GoToOffsetDialog";
 
 type ByteMouseEvent = (event: React.MouseEvent, offset: number) => void;
 
@@ -280,13 +282,18 @@ const HexViewHeaderRow: React.FunctionComponent<HexViewHeaderRowProps> = ({ coun
       <Grid item lg={4}>
         <Stack direction="row" justifyContent="flex-end">
           <Tooltip title="Scroll to top" arrow>
-            <IconButton size="small" color="inherit" onClick={onScrollTop}>
+            <IconButton size="medium" color="inherit" onClick={onScrollTop}>
               <ScrollToTopIcon fontSize="inherit" className="Rotated90Clockwise" />
             </IconButton>
           </Tooltip>
           <Tooltip title="Scroll to bottom" arrow>
-            <IconButton size="small" color="inherit" onClick={onScrollBottom}>
+            <IconButton size="medium" color="inherit" onClick={onScrollBottom}>
               <ScrollToBottomIcon fontSize="inherit" className="Rotated90Clockwise" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Scroll to bottom" arrow>
+            <IconButton size="medium" color="inherit" onClick={onScrollBottom}>
+              <GoToOffsetIcon fontSize="inherit" />
             </IconButton>
           </Tooltip>
         </Stack>

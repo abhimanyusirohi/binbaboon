@@ -89,32 +89,30 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({
 
   return (
     <ViewContainer icon={<SearchIcon />} title="Search" description="Search for text or hex values">
-      <Stack direction="column" alignItems="end" spacing={1}>
-        <OutlinedInput
-          type="text"
-          fullWidth
-          size="small"
-          autoComplete="off"
-          defaultValue={searchText}
-          placeholder={searchType === "text" ? "Search text e.g. PDF" : "Search hex values e.g. FFF0"}
-          onChange={(e) => setSearchText(e.target.value)}
-          onKeyPress={handleSearchKeyPress}
-          startAdornment={<SearchTypeToggleButton checked={searchType === "hex"} onToggle={toggleSearchType} />}
-          endAdornment={
-            searchType === "text" && <SearchTextToggleCaseButton checked={!ignoreCase} onToggle={toggleSearchCase} />
-          }
-          inputProps={{ "aria-label": "Search" }}
-        />
-        <Button size="small" variant="contained" disabled={searchText.length === 0} onClick={handleSearch}>
-          Search
-        </Button>
-        <SearchResultView
-          matches={searchResults}
-          maximumMatches={maximumMatches}
-          onMatchSelect={selectMatch}
-          onClose={hideSearchResults}
-        />
-      </Stack>
+      <OutlinedInput
+        type="text"
+        fullWidth
+        size="small"
+        autoComplete="off"
+        defaultValue={searchText}
+        placeholder={searchType === "text" ? "Search text e.g. PDF" : "Search hex values e.g. FFF0"}
+        onChange={(e) => setSearchText(e.target.value)}
+        onKeyPress={handleSearchKeyPress}
+        startAdornment={<SearchTypeToggleButton checked={searchType === "hex"} onToggle={toggleSearchType} />}
+        endAdornment={
+          searchType === "text" && <SearchTextToggleCaseButton checked={!ignoreCase} onToggle={toggleSearchCase} />
+        }
+        inputProps={{ "aria-label": "Search" }}
+      />
+      <Button size="small" variant="contained" disabled={searchText.length === 0} onClick={handleSearch}>
+        Search
+      </Button>
+      <SearchResultView
+        matches={searchResults}
+        maximumMatches={maximumMatches}
+        onMatchSelect={selectMatch}
+        onClose={hideSearchResults}
+      />
     </ViewContainer>
   );
 };

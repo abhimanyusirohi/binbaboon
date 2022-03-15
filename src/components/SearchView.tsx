@@ -38,7 +38,8 @@ export interface SearchViewProps {
 export const SearchView: React.FunctionComponent<SearchViewProps> = ({
   dataStore,
   selectionStore,
-  maximumMatches = 250
+  maximumMatches = 250,
+  ...rest
 }) => {
   const [searchText, setSearchText] = useState<string>("");
   const [searchType, setSearchType] = useState<"text" | "hex">("text");
@@ -88,7 +89,7 @@ export const SearchView: React.FunctionComponent<SearchViewProps> = ({
   };
 
   return (
-    <ViewContainer icon={<SearchIcon />} title="Search" description="Search for text or hex values">
+    <ViewContainer icon={<SearchIcon />} title="Search" description="Search for text or hex values" {...rest}>
       <OutlinedInput
         type="text"
         fullWidth

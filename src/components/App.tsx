@@ -26,19 +26,19 @@ export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose
     <>
       <Grid container spacing={1} padding={1}>
         <Grid item lg={3}>
-          <Stack direction="column" spacing={1}>
+          <MultiViewContainer>
             <FileInfoView store={store.dataStore} />
             <BookmarkView bookmarkStore={store.bookmarkStore} selectionStore={store.selectionStore} />
-          </Stack>
+          </MultiViewContainer>
         </Grid>
         <Grid item lg={6}>
           <HexView store={store} />
         </Grid>
         <Grid item lg={3}>
-          <Stack direction="column" spacing={1}>
+          <MultiViewContainer>
             <SelectionView store={store.selectionStore} />
             <SearchView dataStore={store.dataStore} selectionStore={store.selectionStore} />
-          </Stack>
+          </MultiViewContainer>
         </Grid>
       </Grid>
       <Fab
@@ -56,3 +56,20 @@ export const App: React.FunctionComponent<AppProps> = observer(({ store, onClose
     </>
   );
 });
+
+/**
+ * Contains multiple views
+ * Sets full height on the last component
+ */
+const MultiViewContainer: React.FC = ({ children }) => {
+  return (
+    <Stack direction="column" spacing={1} sx={{ height: "100%" }}>
+      {React.Children.map(children, (child, index) => {
+        if (React.isValidElement(child)) {
+          const isLastChild = index === React.Children.count(children) - 1;
+          return React.cloneElement(child, isLastChild ? { ...child.props, sx: { height: "100%" } } : child.props);
+        }
+      })}
+    </Stack>
+  );
+};

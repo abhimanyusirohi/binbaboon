@@ -15,9 +15,9 @@ export interface ViewContainerProps {
   description: string;
 }
 
-export const ViewContainer: React.FC<ViewContainerProps> = ({ icon, title, description, children }) => {
+export const ViewContainer: React.FC<ViewContainerProps> = ({ icon, title, description, children, ...rest }) => {
   return (
-    <Accordion defaultExpanded={true} disableGutters variant="outlined">
+    <Accordion defaultExpanded={true} disableGutters variant="outlined" {...rest}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <CardHeader
           avatar={<Avatar sx={{ bgcolor: "primary.main" }}>{icon}</Avatar>}

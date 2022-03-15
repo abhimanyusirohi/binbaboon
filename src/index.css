@@ -13,6 +13,6 @@ body {
   font-family: "Roboto";
 }
 
-body > #root {
+body > #root > div {
   height: 100vh;
 }

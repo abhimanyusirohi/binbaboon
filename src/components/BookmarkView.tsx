@@ -34,7 +34,7 @@ export interface BookmarkViewProps {
 }
 
 export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer(
-  ({ bookmarkStore, selectionStore }) => {
+  ({ bookmarkStore, selectionStore, ...rest }) => {
     const [expanded, setExpanded] = useState<string[]>([]);
     const [addBookmarkDialogShown, showAddBookmarkDialog] = useState<boolean>(false);
 
@@ -97,6 +97,7 @@ export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer
           icon={<BookmarkIcon />}
           title="Bookmarks"
           description="Make bytes meaningful by adding bookmarks"
+          {...rest}
         >
           {bookmarkStore.count > 0 && (
             <TreeView

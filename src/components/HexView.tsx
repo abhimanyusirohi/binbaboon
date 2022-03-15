@@ -110,7 +110,7 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
   const itemSize = 0.015 * windowSize.x;
   return (
     <>
-      <Paper elevation={2}>
+      <Paper elevation={2} sx={{ height: "100%" }}>
         <HexViewHeaderRow
           count={bytesPerRow}
           onScrollTop={scrollToTop}

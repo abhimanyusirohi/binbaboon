@@ -1,3 +1,18 @@
+html {
+  height: 100%; /* fallback for IE and older browsers */
+  height: 100vh;
+}
+
 body {
+  height: auto; /* required to allow content to expand vertically without overflow */
+  width: auto;
+  min-height: 100%; /* fallback for IE and older browsers */
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
   font-family: "Roboto";
+}
+
+body > #root {
+  height: 100vh;
 }

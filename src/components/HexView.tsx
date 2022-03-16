@@ -1,6 +1,7 @@
 import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import { FixedSizeList } from "react-window";
 import classNames from "classnames";
+import AutoSizer from "react-virtualized-auto-sizer";
 
 import { ApplicationStore } from "../ApplicationStore";
 import { Selection } from "../Selection";
@@ -34,19 +35,7 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
   const mouseDraggedFromOffset = useRef<number | null>(null);
 
   const [rows, setRows] = useState<Uint8Array[]>([]);
-  const [windowSize, setWindowSize] = useState({
-    x: window.innerWidth,
-    y: window.innerHeight
-  });
   const [goToOffsetDialogShown, showGoToOffsetDialog] = useState<boolean>(false);
-
-  const updateSize = () =>
-    setWindowSize({
-      x: window.innerWidth,
-      y: window.innerHeight
-    });
-
-  useEffect(() => (window.onresize = updateSize), []);
 
   // Called once on startup to break the data into fixed size rows
   useEffect(() => {
@@ -107,34 +96,36 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
     gridRef.current?.scrollToItem(rows.length - 1, "end");
   };
 
-  const itemSize = 0.015 * windowSize.x;
+  const numberOfRows = 28;
   return (
     <>
-      <Paper elevation={2} sx={{ height: "100%" }}>
+      <Paper variant="outlined" sx={{ height: "100%" }}>
         <HexViewHeaderRow
           count={bytesPerRow}
           onScrollTop={scrollToTop}
           onScrollBottom={scrollToBottom}
           onGoToOffset={() => showGoToOffsetDialog(true)}
         />
-        <FixedSizeList
-          ref={gridRef}
-          height={0.85 * windowSize.y}
-          itemCount={rows.length}
-          itemSize={itemSize}
-          itemData={{
-            rows,
-            bytesPerRow,
-            store,
-            onMouseEvent: onByteMouseEvent
-          }}
-          width={"100%"}
-          layout="vertical"
-          className="NoTextSelect"
-          style={{ overflowY: "scroll" }}
-        >
-          {FixedSizeListRow}
-        </FixedSizeList>
+        <AutoSizer disableWidth>
+          {({ height }: { height: number }) => (
+            <FixedSizeList
+              height={height * 0.9}
+              itemCount={rows.length}
+              itemSize={height / numberOfRows}
+              itemData={{
+                rows,
+                bytesPerRow,
+                store,
+                onMouseEvent: onByteMouseEvent
+              }}
+              width={"100%"}
+              layout="vertical"
+              className="BytesGrid"
+            >
+              {FixedSizeListRow}
+            </FixedSizeList>
+          )}
+        </AutoSizer>
       </Paper>
       {goToOffsetDialogShown && <GoToOffsetDialog store={store} onClose={() => showGoToOffsetDialog(false)} />}
     </>

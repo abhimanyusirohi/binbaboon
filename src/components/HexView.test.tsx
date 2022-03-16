@@ -4,6 +4,16 @@ import userEvent from "@testing-library/user-event";
 import { HexView } from "./HexView";
 import { ApplicationStore } from "../ApplicationStore";
 import { DataStore } from "../DataStore";
+import { AutoSizerProps } from "react-virtualized-auto-sizer";
+
+// Mock the auto-sizer because we are using jest-dom for testing and the
+// height and width will be always 0 which will prevent children from rendering
+jest.mock(
+  "react-virtualized-auto-sizer",
+  () =>
+    ({ children }: AutoSizerProps) =>
+      children({ height: 600, width: 600 })
+);
 
 describe("HexView", () => {
   let dataStore: DataStore;
@@ -27,6 +37,7 @@ describe("HexView", () => {
   test("must have scroll buttons", () => {
     expect(screen.getByRole("button", { name: /scroll to top/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /scroll to bottom/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /go to offset/i })).toBeInTheDocument();
   });
 
   test("must have horizontal header elements", () => {

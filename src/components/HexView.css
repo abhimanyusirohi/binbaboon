@@ -1,5 +1,7 @@
-.NoTextSelect {
+.BytesGrid {
   user-select: none;
+  overflow-y: scroll;
+  border-bottom: 2px solid lightgray;
 }
 
 .Rotated90Clockwise {

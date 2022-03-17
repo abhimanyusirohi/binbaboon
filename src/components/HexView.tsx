@@ -109,6 +109,7 @@ export const HexView: React.FunctionComponent<HexViewProps> = observer(({ store,
         <AutoSizer disableWidth>
           {({ height }: { height: number }) => (
             <FixedSizeList
+              ref={gridRef}
               height={height * 0.9}
               itemCount={rows.length}
               itemSize={height / numberOfRows}

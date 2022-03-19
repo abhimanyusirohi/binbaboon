@@ -6,10 +6,12 @@ import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
 import FileOpenIcon from "@mui/icons-material/FileOpen";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 import { blue } from "@mui/material/colors";
 
@@ -19,7 +21,6 @@ import { App } from "./components/App";
 import { AlertDialog } from "./components/AlertDialog";
 
 import baboonImage from "./baboon.svg";
-import backgroundImage from "./background.png";
 
 import "./index.css";
 import "@fontsource/roboto";
@@ -69,22 +70,17 @@ const Home: React.FunctionComponent = () => {
     input.click();
   };
 
+  const openInNewTab = (url: string) => {
+    const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+    if (newWindow) {
+      newWindow.opener = null;
+    }
+  };
+
   return store ? (
     <App store={store} onClose={() => setStore(undefined)} />
   ) : (
-    <Stack
-      direction="column"
-      spacing={8}
-      justifyContent="center"
-      alignItems="center"
-      sx={{
-        height: "100vh",
-        width: "100vw",
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundRepeat: "repeat",
-        backgroundSize: "4%"
-      }}
-    >
+    <Stack direction="column" spacing={8} justifyContent="center" alignItems="center">
       <Banner text="BinBaboon" />
       <img src={baboonImage} alt="BinBaboon" width="15%" />
       <Button variant="contained" size="large" startIcon={<FileOpenIcon />} onClick={showOpenFileDialog}>
@@ -98,7 +94,9 @@ const Home: React.FunctionComponent = () => {
           <Chip label={process.env.REACT_APP_VERSION} size="small" variant="outlined" />
         </Divider>
       </Container>
-
+      <IconButton onClick={() => openInNewTab("https://github.com/users/abhimanyusirohi/projects/1")}>
+        <GitHubIcon />
+      </IconButton>
       {alertMessage && <AlertDialog infoText={alertMessage} onClose={() => setAlertMessage("")} />}
     </Stack>
   );

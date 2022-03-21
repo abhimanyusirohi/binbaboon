@@ -31,18 +31,22 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
   const integerSize = hasIntRepresentation ? store.selectedData.length * 8 : "";
   const { signedValue, unsignedValue } = convertToIntegerValues(store.selectedData, bigEndian);
   const binaryString = convertToBinaryString(store.selectedData, bigEndian);
-  const hexString = Array.from(store.selectedData)
-    .map((value) => value.toString(16).toUpperCase().padStart(2, "0"))
-    .join(" ");
+  const hexString = convertToHexString(store.selectedData);
 
-  const handleCopy = (value: string): void => {
-    navigator.clipboard.writeText(value);
-    setNotificationMessage("Value copied");
-  };
+  const handleCopy = hasIntRepresentation
+    ? (value: string): void => {
+        navigator.clipboard.writeText(value);
+        setNotificationMessage("Value copied");
+      }
+    : undefined;
 
   const copySelection = (): void => {
-    navigator.clipboard.writeText(String.fromCharCode(...store.selectedData));
-    setNotificationMessage("Selected bytes copied");
+    try {
+      navigator.clipboard.writeText(String.fromCharCode(...store.selectedData));
+      setNotificationMessage("Selected bytes copied");
+    } catch {
+      setNotificationMessage("Selected bytes could not be copied");
+    }
   };
 
   const handleGoToOffset = (value: string): void => {
@@ -72,7 +76,7 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
         <DataDisplay
           dataType={`Int${integerSize}`}
           dataValue={hasIntRepresentation ? signedValue.toString() : "-"}
-          onCopy={hasIntRepresentation ? handleCopy : undefined}
+          onCopy={handleCopy}
           onGoToOffset={
             hasIntRepresentation && store.isValidSelection(new Selection(signedValue, signedValue))
               ? handleGoToOffset
@@ -82,18 +86,14 @@ export const SelectionView: React.FunctionComponent<SelectionViewProps> = observ
         <DataDisplay
           dataType={`UInt${integerSize}`}
           dataValue={hasIntRepresentation ? unsignedValue.toString() : "-"}
-          onCopy={hasIntRepresentation ? handleCopy : undefined}
+          onCopy={handleCopy}
           onGoToOffset={
             hasIntRepresentation && store.isValidSelection(new Selection(unsignedValue, unsignedValue))
               ? handleGoToOffset
               : undefined
           }
         />
-        <DataDisplay
-          dataType="Binary"
-          dataValue={hasIntRepresentation ? binaryString : "-"}
-          onCopy={hasIntRepresentation ? handleCopy : undefined}
-        />
+        <DataDisplay dataType="Binary" dataValue={hasIntRepresentation ? binaryString : "-"} onCopy={handleCopy} />
         <Container disableGutters sx={{ textAlign: "end" }}>
           <Button variant="contained" size="small" onClick={copySelection}>
             Copy Bytes
@@ -178,6 +178,11 @@ const DataDisplay: React.FunctionComponent<DataDisplayProps> = ({
 function convertToIntegerValues(bytes: Uint8Array, bigEndian: boolean): { signedValue: number; unsignedValue: number } {
   let signedValue = 0;
   let unsignedValue = 0;
+
+  if (bytes.length > 8) {
+    return { signedValue, unsignedValue };
+  }
+
   const dataView = new DataView(bytes.buffer);
 
   switch (bytes.length) {
@@ -233,7 +238,7 @@ function convertNonStandardIntegerSize(data: Uint8Array, bigEndian: boolean): nu
  * Converts the specified byte array into a binary string grouped into 8 bits chunks
  */
 function convertToBinaryString(bytes: Uint8Array, bigEndian: boolean): string {
-  const bytesCopy = [...bytes];
+  const bytesCopy = [...bytes.subarray(0, 8)];
 
   // Align to the next integer 32 or 64
   if (bytesCopy.length === 3) {
@@ -248,4 +253,14 @@ function convertToBinaryString(bytes: Uint8Array, bigEndian: boolean): string {
 
   const binaryString = bytesCopy.reduce((str, byte) => str + byte.toString(2).padStart(8, "0"), "");
   return binaryString.replace(/(.{8})/g, "$1 ").trim();
+}
+
+/**
+ * Converts the specified bytee array into a hex string
+ * Only the first 32 bytes are converted to be shown
+ */
+function convertToHexString(bytes: Uint8Array): string {
+  return Array.from(bytes.subarray(0, 32))
+    .map((value) => value.toString(16).toUpperCase().padStart(2, "0"))
+    .join(" ");
 }

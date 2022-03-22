@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 
-import Button from "@mui/material/Button";
 import TreeItem from "@mui/lab/TreeItem";
 import TreeView from "@mui/lab/TreeView";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import Toolbar from "@mui/material/Toolbar";
+
 import { styled } from "@mui/material/styles";
 
 import BookmarkIcon from "@mui/icons-material/BookmarkBorderOutlined";
@@ -16,17 +17,14 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpIcon from "@mui/icons-material/HelpOutline";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
+import AddBookmarkIcon from "@mui/icons-material/BookmarkAddOutlined";
+import CollapseAllIcon from "@mui/icons-material/Queue";
 
 import { Bookmark } from "../Bookmark";
 import { BookmarkStore } from "../BookmarkStore";
 import { SelectionStore } from "../SelectionStore";
 import { ViewContainer } from "./ViewContainer";
 import { AddBookmarkDialog } from "./AddBookmarkDialog";
-
-/**
- * TODOs
- * Top: Search, Expand All, Collapse All
- */
 
 export interface BookmarkViewProps {
   bookmarkStore: BookmarkStore;
@@ -91,30 +89,61 @@ export const BookmarkView: React.FunctionComponent<BookmarkViewProps> = observer
       return [...expandedIds];
     };
 
+    const collapseAllBookmarks = () => {
+      setExpanded([]);
+    };
+
     return (
       <>
         <ViewContainer
           icon={<BookmarkIcon />}
           title="Bookmarks"
-          description="Make bytes meaningful by adding bookmarks"
+          description={
+            bookmarkStore.count > 0 ? `${bookmarkStore.count} bookmarks` : "Make bytes meaningful by adding bookmarks"
+          }
           {...rest}
         >
+          <Toolbar disableGutters variant="dense">
+            <Tooltip title="Collapse all" arrow>
+              <IconButton size="small" color="inherit" aria-label="expand all" onClick={collapseAllBookmarks}>
+                <CollapseAllIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Add bookmark" arrow>
+              <IconButton
+                size="small"
+                color="inherit"
+                aria-label="add boookmark"
+                onClick={() => showAddBookmarkDialog(true)}
+              >
+                <AddBookmarkIcon />
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
           {bookmarkStore.count > 0 && (
-            <TreeView
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-              expanded={getExpandedNodes()}
-              selected={bookmarkStore.selectedBookmark !== null ? bookmarkStore.selectedBookmark.id : ""}
-              onNodeSelect={handleSelect}
-              onNodeToggle={handleToggle}
-              sx={{ overflowY: "auto", minHeight: 240, width: "100%" }}
+            <Box
+              sx={{
+                width: "100%",
+                overflowY: "auto",
+                height: "calc(60vh)",
+                borderTopWidth: "1px",
+                borderTopStyle: "solid",
+                borderTopColor: "divider"
+              }}
             >
-              {renderTree(bookmarkStore.bookmarkTree)}
-            </TreeView>
+              <TreeView
+                defaultCollapseIcon={<ExpandMoreIcon />}
+                defaultExpandIcon={<ChevronRightIcon />}
+                expanded={getExpandedNodes()}
+                selected={bookmarkStore.selectedBookmark !== null ? bookmarkStore.selectedBookmark.id : ""}
+                onNodeSelect={handleSelect}
+                onNodeToggle={handleToggle}
+                sx={{ width: "100%" }}
+              >
+                {renderTree(bookmarkStore.bookmarkTree)}
+              </TreeView>
+            </Box>
           )}
-          <Button variant="contained" size="small" onClick={() => showAddBookmarkDialog(true)}>
-            Add
-          </Button>
         </ViewContainer>
         {addBookmarkDialogShown && (
           <AddBookmarkDialog

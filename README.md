@@ -2,15 +2,16 @@
 
 BinBaboon is a web application that displays files in hexadecimal and allows bookmarking bytes to make sense of binary data.
 
+It is written in Typescript and uses React with Material-UI components. Compiled as static client-side only application and hosted on AWS S3 bucket: https://www.binbaboon.com
+
 # Getting started
 
 To get started:
 
 1. Pull code from GitHub repo into a folder
 2. Open the folder in VS Code
-3. Install recommended extensions
-4. Run `npm ci` to install dependencies
-5. Run `npm start` to start the dev server and load the web app in the browser
+3. Run `npm ci` to install dependencies
+4. Run `npm start` to start the dev server and load the web app in the browser
 
 Run `npm run build` to build
 
@@ -22,11 +23,7 @@ Run `npm run test:coverage` to run all tests and generate coverage report. Cover
 
 ## main
 
-Releases are made from `main` branch. Commits are never directly committed to this branch. Commits are made in `develop` and `develop` is then merged to this branch when a new release is needed.
-
-## develop
-
-All the development happens in the `develop` branch. For a new release, the `develop` branch is merged to the `main` branch.
+A push to this branch will automatically trigger the deployment.
 
 # References
 
@@ -35,3 +32,5 @@ All the development happens in the `develop` branch. For a new release, the `dev
 [The TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
 
 [JEST](https://jestjs.io/docs/getting-started)
+
+[Material UI](https://mui.com)

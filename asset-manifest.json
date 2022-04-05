@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "./static/css/main.9032f72e.css",
+    "main.js": "./static/js/main.56009ae3.js",
+    "static/media/roboto-all-400-normal.woff": "./static/media/roboto-all-400-normal.376ea5d93f71583052f6.woff",
+    "static/media/roboto-mono-all-400-normal.woff": "./static/media/roboto-mono-all-400-normal.8c12dec86f8b17eac652.woff",
+    "static/media/roboto-latin-400-normal.woff2": "./static/media/roboto-latin-400-normal.4673b4537a84c7f7a130.woff2",
+    "static/media/roboto-cyrillic-ext-400-normal.woff2": "./static/media/roboto-cyrillic-ext-400-normal.493afe7ae8ecfe268800.woff2",
+    "static/media/roboto-mono-cyrillic-ext-400-normal.woff2": "./static/media/roboto-mono-cyrillic-ext-400-normal.b60acdafdfd55591eddf.woff2",
+    "static/media/roboto-mono-latin-400-normal.woff2": "./static/media/roboto-mono-latin-400-normal.535bc89d4af715503b01.woff2",
+    "static/media/roboto-latin-ext-400-normal.woff2": "./static/media/roboto-latin-ext-400-normal.c3dcdbd5bb4d4af80817.woff2",
+    "static/media/roboto-cyrillic-400-normal.woff2": "./static/media/roboto-cyrillic-400-normal.5e493812deabd1d01e60.woff2",
+    "static/media/baboon.svg": "./static/media/baboon.f90c140940f12738b15bea61c1cbb18d.svg",
+    "static/media/roboto-mono-latin-ext-400-normal.woff2": "./static/media/roboto-mono-latin-ext-400-normal.52237f44c81dd66b90e3.woff2",
+    "static/media/roboto-greek-400-normal.woff2": "./static/media/roboto-greek-400-normal.1cbfc636c911faa4d0ca.woff2",
+    "static/media/roboto-mono-cyrillic-400-normal.woff2": "./static/media/roboto-mono-cyrillic-400-normal.3b6a3201563987f5c30c.woff2",
+    "static/media/roboto-vietnamese-400-normal.woff2": "./static/media/roboto-vietnamese-400-normal.c0bec65d01f776c00c91.woff2",
+    "static/media/roboto-mono-greek-400-normal.woff2": "./static/media/roboto-mono-greek-400-normal.6c5721aefd48c14edd31.woff2",
+    "static/media/roboto-mono-vietnamese-400-normal.woff2": "./static/media/roboto-mono-vietnamese-400-normal.baa5de8fd025f9a570c0.woff2",
+    "static/media/roboto-greek-ext-400-normal.woff2": "./static/media/roboto-greek-ext-400-normal.bb723e8458c9c653e505.woff2",
+    "index.html": "./index.html",
+    "main.9032f72e.css.map": "./static/css/main.9032f72e.css.map",
+    "main.56009ae3.js.map": "./static/js/main.56009ae3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9032f72e.css",
+    "static/js/main.56009ae3.js"
+  ]
+}

@@ -1,5 +1,7 @@
 # BinBaboon
 
+![Build](https://github.com/abhimanyusirohi/binbaboon/actions/workflows/node.js.yml/badge.svg)
+
 BinBaboon is a web application that displays files in hexadecimal and allows bookmarking bytes to make sense of binary data.
 
 It is written in Typescript and uses React with Material-UI components. Compiled as static client-side only application and hosted on GitHub Pages: https://abhimanyusirohi.github.io/binbaboon/

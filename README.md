@@ -4,11 +4,15 @@
 
 BinBaboon is a web application that displays files in hexadecimal and allows bookmarking bytes to make sense of binary data.
 
-It is written in Typescript and uses React with Material-UI components. Compiled as static client-side only application and hosted on GitHub Pages: https://abhimanyusirohi.github.io/binbaboon/
+It is written in Typescript and uses React with Material-UI components. Compiled as static client-side only application and hosted on GitHub Pages.
 
 ![BinBaboon](screenshot.png "BinBaboon")
 
-# Getting started
+# Blog
+
+https://binbaboon.blogspot.com/
+
+# Building
 
 To get started:
 
@@ -22,12 +26,6 @@ Run `npm run build` to build
 Run `npm test` to run all tests
 
 Run `npm run test:coverage` to run all tests and generate coverage report. Coverage report will be generated in the terminal as well as in _coverage_ directory. Open _index.html_ in _coverage_ directory to view code coverage.
-
-# Branches
-
-## main
-
-A push to this branch will automatically trigger the deployment.
 
 # References
 

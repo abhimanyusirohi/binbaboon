@@ -94,7 +94,7 @@ const Home: React.FunctionComponent = () => {
           <Chip label={process.env.REACT_APP_VERSION} size="small" variant="outlined" />
         </Divider>
       </Container>
-      <IconButton onClick={() => openInNewTab("https://github.com/users/abhimanyusirohi/projects/1")}>
+      <IconButton onClick={() => openInNewTab("https://github.com/abhimanyusirohi/binbaboon")}>
         <GitHubIcon />
       </IconButton>
       {alertMessage && <AlertDialog infoText={alertMessage} onClose={() => setAlertMessage("")} />}
